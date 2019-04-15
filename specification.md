@@ -31,7 +31,7 @@ _TODO: a short description of the current situation and how it should be changed
 _not knew at this point and time_
 
 ## 2.4 Operating Environment
-    E-FEAT-01:      Application is not dependent on any geographical areas
+    E-FEAT-01:      Application should not be dependent on any geographical areas
     E-FEAT-02:      Application shall be independent of the operating system
 
 ## 2.5 Design and Implementation Constraints
