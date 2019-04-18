@@ -1,0 +1,47 @@
+@startuml
+
+interface IWorker {
+    {abstract} bool Execute()
+    {abstract} bool Start()
+    {abstract} bool Abort()
+    .. Properties ..
+    {abstract} WorkerManager Manager()
+}
+
+class BackupWorker implements IWorker  {
+
+}
+
+class ExampleWorker implements IWorker {
+
+}
+ 
+class WorkerManager {
+    -workers : List<IWorker>
+    -storage : WorkerStorage
+
+    bool StartService()
+    bool AbortService()
+}
+
+class WorkerStorage {
+    +cacheDir : String
+
+    bool Load(string file)
+    bool Save(string file)
+
+    Stream Cache(IWorker worker);
+}
+
+class Entrypoint {
+    -{static} manager : WorkerManager
+
+    void Main(string[] args)
+}
+
+Entrypoint "1" -- "1" WorkerManager
+WorkerManager "1" -- "1" WorkerStorage
+
+WorkerManager "1" -- "n" IWorker
+
+@enduml
