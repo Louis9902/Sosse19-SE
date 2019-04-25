@@ -7,10 +7,13 @@ To get started with the project clone the repository with :
 $ git clone https://github.com/louis9902/Sosse19-SE
 ```
 
-## Render Uml Diagrams
-If you want to visualize the UML diagrams you need to have [PlantUML](http://plantuml.com/) installed.
-PlantUML requires [Graphviz](https://www.graphviz.org/) to work for class diagrams. The UML diagrams are located in the `diagram` folder, just navigate there with PlantUML.
+### Prerequisites
+To fully render the uml diagrams you need to have [graphviz] installed as well as plant [plantuml].
+To render the diagrams just open the jar file which you have downloaded from plantuml and navigate to the correct folder. Then you can choos which diagram you want to see. Please note this won't wotk if you don't have [graphviz] installed.
 
 ## References
 + [PlantUML](http://plantuml.com/)
 + [Graphviz](https://www.graphviz.org/)
+
+[graphviz]: https://www.graphviz.org/ 
+[plantuml]: http://plantuml.com/
