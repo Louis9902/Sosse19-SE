@@ -1,8 +1,8 @@
 @startuml
 
  abstract class Worker {
-    -identifier: Integer 
-    #manager : WorkerManager
+    -identifier: Guid 
+    #manager: WorkerManager
     
     #Worker(identifier: Integer, manager: WorkerManager)
 
@@ -23,8 +23,8 @@ class BackupWorker extends Worker  {
 }
  
 class WorkerManager {
-    -workers : List<Worker>
-    -storage : String {File}
+    -workers: List<Worker>
+    -storage: String {File}
 
     +bool StartService()
     +bool AbortService()
@@ -35,17 +35,25 @@ class WorkerManager {
 class FileObserver {
     +FileObserver(file: string)
 
-    +List<String> Changes {get} 
+    +Changes: List<String> {get} 
 }
 
 class Entrypoint {
-    -{static} manager : WorkerManager
+    -{static} manager: WorkerManager
 
     {static} +void Main(args: string[])
+}
+
+class WorkerTypeRegister<< (S,#FF7700) Static >> {
+    -map: Dictionary<Long, Type>
+    +void Register()
+    +Type SearchType(id: Long)
 }
 
 Entrypoint "1" -- "1" WorkerManager
 WorkerManager "1" -- "n" Worker
 FileObserver "1" -- "1" BackupWorker
+
+WorkerTypeRegister "1" -- "1" Entrypoint
 
 @enduml
