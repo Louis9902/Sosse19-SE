@@ -26,8 +26,8 @@ class WorkerManager {
     -workers: List<Worker>
     -storage: String {File}
 
-    +bool StartService()
-    +bool AbortService()
+    +bool StartWorkers()
+    +bool AbortWorkers()
 
     +Worker CreateWorker(id: Integer)
 }
@@ -50,10 +50,10 @@ class WorkerTypeRegister<< (S,#FF7700) Static >> {
     +Type SearchType(id: Long)
 }
 
-Entrypoint "1" -- "1" WorkerManager
-WorkerManager "1" -- "n" Worker
-FileObserver "1" -- "1" BackupWorker
+Entrypoint "1" -- "1" WorkerManager : starts >
+WorkerManager "1" -- "n" Worker : manages >
+FileObserver "1" -- "1" BackupWorker : keeps track of <
 
-WorkerTypeRegister "1" -- "1" Entrypoint
+WorkerTypeRegister "1" -- "1" Entrypoint : registers <
 
 @enduml
