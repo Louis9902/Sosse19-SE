@@ -7,7 +7,7 @@ namespace Backupper.Core
 {
     public class WorkerManager
     {
-        private readonly Dictionary<long, Type> register = new Dictionary<long, Type>();
+        private readonly Dictionary<byte, Type> register = new Dictionary<byte, Type>();
         private readonly Dictionary<Guid, Worker> workers = new Dictionary<Guid, Worker>();
 
         public WorkerManager()
@@ -37,7 +37,7 @@ namespace Backupper.Core
                 var amount = reader.ReadInt32();
                 for (var i = 0; i < amount; i++)
                 {
-                    var id = reader.ReadInt64();
+                    var id = reader.ReadByte();
                     var ident = reader.ReadGuid();
                     var chunk = reader.ReadInt32();
 

@@ -9,7 +9,7 @@ namespace Backupper.Core
     public static class WorkerTypeRegister
     {
 
-        public static int Register(Dictionary<Int64, Type> register)
+        public static int Register(Dictionary<byte, Type> register)
         {
             return 0;
         }
