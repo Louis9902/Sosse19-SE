@@ -24,6 +24,11 @@ namespace Backupper.Core
         {
             Console.Error.WriteLine(line);
         }
+
+        public static void LogWarning(string line)
+        {
+            
+        }
         
     }
 }

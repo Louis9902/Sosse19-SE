@@ -22,6 +22,11 @@ namespace Backupper.Core
 
         public bool AbortWorkers()
         {
+            using (var stream = new FileStream(FileConfig, FileMode.OpenOrCreate))
+            {
+                WriteConfig(stream);
+            }
+
             return false;
         }
 
@@ -32,29 +37,23 @@ namespace Backupper.Core
                 var amount = reader.ReadInt32();
                 for (var i = 0; i < amount; i++)
                 {
-                    var serial = reader.ReadInt64();
-                    
+                    var id = reader.ReadInt64();
                     var ident = reader.ReadGuid();
                     var chunk = reader.ReadInt32();
-                    var buffer = reader.ReadBytes(chunk);
 
-                    if (!register.TryGetValue(serial, out var clazz))
+                    if (!register.TryGetValue(id, out var clazz))
                     {
-                        // TODO: fix me at some point
-                    }
-
-                    //var stream = new MemoryStream(buffer, false);
-
-                    if (!register.TryGetValue(serial, out var kind))
-                    {
-                        LogException($"File {FileConfig} contains corrupt data, please fix!");
+                        LogWarning($"Data corruption for {ident}, please fix!");
+                        stream.Seek(chunk, SeekOrigin.Current);
                         continue;
                     }
 
-                    var worker = Worker.NewInstance(kind, this, ident);
+                    var buffer = new MemoryStream(reader.ReadBytes(chunk), false);
+                    var worker = Worker.NewInstance(clazz, this, ident);
+
                     try
                     {
-                        worker.Start(stream);
+                        worker.Start(buffer);
                     }
                     catch (Exception ex)
                     {
@@ -66,12 +65,45 @@ namespace Backupper.Core
             }
         }
 
-        private void WriteConfig()
+        private void WriteConfig(Stream stream)
         {
-            using (var writer = new BinaryWriter(new FileStream(FileConfig, FileMode.CreateNew)))
+            using (var writer = new BinaryWriter(stream))
             {
                 writer.Write(workers.Count);
+
+                foreach (var next in workers)
+                {
+                    var worker = next.Value;
+
+                    if (!register.TryGetKeyByValue(worker.GetType(), out var id))
+                    {
+                        DumpData(next);
+                        continue;
+                    }
+
+                    writer.Write(id);
+                    writer.WriteGuid(worker.Identifier);
+
+                    var buffer = new MemoryStream();
+                    try
+                    {
+                        worker.Abort(buffer);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogException($"An error occured while constructing worker instance {worker.Identifier}: {ex.Message}");
+                    }
+
+                    var array = buffer.ToArray();
+                    writer.Write(array.Length);
+                    writer.Write(array);
+                }
             }
+        }
+
+        private void DumpData(KeyValuePair<Guid, Worker> next)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -85,6 +117,25 @@ namespace Backupper.Core
         public static void WriteGuid(this BinaryWriter writer, Guid guid)
         {
             writer.Write(guid.ToByteArray());
+        }
+    }
+
+    public static class DictionaryCompanion
+    {
+        public static bool TryGetKeyByValue<K, V>(this IDictionary<K, V> dictionary, V value, out K result)
+        {
+            if (dictionary == null) goto ResultNull;
+
+            foreach (var next in dictionary)
+            {
+                if (!value.Equals(next.Value)) continue;
+                result = next.Key;
+                return true;
+            }
+
+            ResultNull:
+            result = default(K);
+            return false;
         }
     }
 }

@@ -10,13 +10,13 @@ namespace Backupper.Core
         private static readonly ThreadLocal<WorkerInfo> info = new ThreadLocal<WorkerInfo>();
 
         private readonly WorkerManager manager;
-        private readonly Guid identifier;
+        public Guid Identifier { get; }
 
         protected Worker()
         {
             var args = info.Value;
             manager = args.Manager;
-            identifier = args.Identifier;
+            Identifier = args.Identifier;
         }
 
         public static Worker NewInstance(Type kind, WorkerManager workerManager, Guid identifier)
