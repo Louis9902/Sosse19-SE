@@ -45,9 +45,9 @@
   <ItemGroup>
     <Compile Include="Entrypoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Worker.cs" />
     <Compile Include="WorkerManager.cs" />
-    <Compile Include="WorkerTypeRegister.cs" />
+    <Compile Include="WorkerGroups.cs" />
+    <Compile Include="Tasks\Worker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

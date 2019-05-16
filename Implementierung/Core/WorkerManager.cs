@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Backupper.Core.Tasks;
 using static Backupper.Core.Entrypoint;
 
 namespace Backupper.Core
@@ -9,22 +10,35 @@ namespace Backupper.Core
     {
         private readonly Dictionary<byte, Type> register = new Dictionary<byte, Type>();
         private readonly Dictionary<Guid, Worker> workers = new Dictionary<Guid, Worker>();
+        private readonly WorkerGroups groups = new WorkerGroups();
 
         public WorkerManager()
         {
-            WorkerTypeRegister.Register(register);
+            WorkerGroups.Register(register);
+        }
+
+        private static FileStream NewConfigStream(FileMode mode)
+        {
+            return new FileStream(FileConfig, mode);
         }
 
         public bool StartWorkers()
         {
+            using (var stream = NewConfigStream(FileMode.Open))
+            {
+                ReadConfig(stream);
+                return true;
+            }
+
             return false;
         }
 
         public bool AbortWorkers()
         {
-            using (var stream = new FileStream(FileConfig, FileMode.OpenOrCreate))
+            using (var stream = NewConfigStream(FileMode.CreateNew))
             {
                 WriteConfig(stream);
+                return true;
             }
 
             return false;
@@ -32,79 +46,71 @@ namespace Backupper.Core
 
         private void ReadConfig(Stream stream)
         {
-            using (var reader = new BinaryReader(stream))
+            var reader = new BinaryReader(stream);
+
+            var amount = reader.ReadInt32();
+            for (var index = 0; index < amount; index++)
             {
-                var amount = reader.ReadInt32();
-                for (var i = 0; i < amount; i++)
+                var group = reader.ReadGuid();
+                var ident = reader.ReadGuid();
+
+                if (!groups.FindGroupType(group, out var clazz))
                 {
-                    var id = reader.ReadByte();
-                    var ident = reader.ReadGuid();
-                    var chunk = reader.ReadInt32();
-
-                    if (!register.TryGetValue(id, out var clazz))
-                    {
-                        LogWarning($"Data corruption for {ident}, please fix!");
-                        stream.Seek(chunk, SeekOrigin.Current);
-                        continue;
-                    }
-
-                    var buffer = new MemoryStream(reader.ReadBytes(chunk), false);
-                    var worker = Worker.NewInstance(clazz, this, ident);
-
-                    try
-                    {
-                        worker.Start(buffer);
-                    }
-                    catch (Exception ex)
-                    {
-                        LogException($"An error occured while constructing worker instance {ident}: {ex.Message}");
-                    }
-
-                    workers.Add(ident, worker);
+                    LogWarning($"{ident} has corrupt data, please fix!");
+                    stream.Seek(reader.ReadInt32(), SeekOrigin.Current);
+                    continue;
                 }
+
+                var worker = Worker.NewInstance(clazz, group, ident);
+
+                var chunk = reader.ReadInt32();
+                var buffer = reader.ReadBytes(chunk);
+
+                try
+                {
+                    worker.Load(new MemoryStream(buffer));
+                }
+                catch (Exception ex)
+                {
+                    // ToDo: Exception Handle
+                }
+
+                workers[worker.Group] = worker;
             }
         }
 
         private void WriteConfig(Stream stream)
         {
-            using (var writer = new BinaryWriter(stream))
+            var writer = new BinaryWriter(stream);
+
+            writer.Write(workers.Count);
+            foreach (var worker in workers.Values)
             {
-                writer.Write(workers.Count);
-
-                foreach (var next in workers)
+                if (!groups.FindGroupType(worker.Group, out var clazz))
                 {
-                    var worker = next.Value;
-
-                    if (!register.TryGetKeyByValue(worker.GetType(), out var id))
-                    {
-                        DumpData(next);
-                        continue;
-                    }
-
-                    writer.Write(id);
-                    writer.WriteGuid(worker.Identifier);
-
-                    var buffer = new MemoryStream();
-                    try
-                    {
-                        worker.Abort(buffer);
-                    }
-                    catch (Exception ex)
-                    {
-                        LogException($"An error occured while constructing worker instance {worker.Identifier}: {ex.Message}");
-                    }
-
-                    var array = buffer.ToArray();
-                    writer.Write(array.Length);
-                    writer.Write(array);
+                    continue;
                 }
+
+                writer.Write(worker.Group);
+                writer.Write(worker.Identifier);
+
+                var buffer = new MemoryStream();
+                try
+                {
+                    worker.Save(buffer);
+                }
+                catch (Exception ex)
+                {
+                    // ToDo: Exception Handle
+                }
+
+                writer.Write(buffer.Length);
+                writer.Write(buffer.ToArray());
+
+                workers[worker.Group] = null;
             }
         }
-
-        private void DumpData(KeyValuePair<Guid, Worker> next)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 
     public static class StreamCompanion
@@ -114,28 +120,10 @@ namespace Backupper.Core
             return new Guid(reader.ReadBytes(16));
         }
 
-        public static void WriteGuid(this BinaryWriter writer, Guid guid)
+        public static void Write(this BinaryWriter writer, Guid guid)
         {
             writer.Write(guid.ToByteArray());
         }
     }
-
-    public static class DictionaryCompanion
-    {
-        public static bool TryGetKeyByValue<K, V>(this IDictionary<K, V> dictionary, V value, out K result)
-        {
-            if (dictionary == null) goto ResultNull;
-
-            foreach (var next in dictionary)
-            {
-                if (!value.Equals(next.Value)) continue;
-                result = next.Key;
-                return true;
-            }
-
-            ResultNull:
-            result = default(K);
-            return false;
-        }
-    }
+    
 }
