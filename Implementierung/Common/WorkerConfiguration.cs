@@ -7,13 +7,14 @@ namespace Backupper.Common
 {
     public class WorkerConfiguration
     {
-        private readonly WorkerTypes Types;
+        private readonly WorkerRegistry registry;
 
         private string Configuration { get; }
 
-        public WorkerConfiguration(string configuration)
+        public WorkerConfiguration(string configuration, WorkerRegistry regs)
         {
             Configuration = configuration;
+            registry = regs;
         }
 
         public bool Load(IDictionary<Guid, IWorker> workers)
@@ -30,12 +31,12 @@ namespace Backupper.Common
                         var group = reader.ReadGuid();
                         var identifier = reader.ReadGuid();
 
-                        if (!Types.TryGet(group, out var clazz))
+                        if (!registry.TryGet(group, out var clazz))
                         {
                             continue;
                         }
 
-                        var worker = BasicWorker.NewInstance(clazz, group, identifier);
+                        var worker = DefaultWorker.NewInstance(clazz, group, identifier);
 
                         var chunksLength = reader.ReadInt32();
                         var chunksBuffer = reader.ReadBytes(chunksLength);
@@ -85,7 +86,7 @@ namespace Backupper.Common
                     {
                         var clazz = worker.GetType();
 
-                        if (!Types.TryGet(clazz, out var group))
+                        if (!registry.TryGet(clazz, out var group))
                         {
                             continue;
                         }
@@ -104,7 +105,7 @@ namespace Backupper.Common
                         {
                             using (var buffer = new MemoryStream())
                             {
-                                worker.LoadData(buffer);
+                                worker.SaveData(buffer);
                                 chunks = buffer.ToArray();
                             }
                         }
@@ -116,8 +117,6 @@ namespace Backupper.Common
 
                         writer.Write(chunks.Length);
                         writer.Write(chunks);
-
-                        workers[worker.Identifier] = worker;
                     }
                 }
 

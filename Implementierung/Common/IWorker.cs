@@ -8,9 +8,9 @@ namespace Backupper.Common
         Guid Group { get; }
         Guid Identifier { get; }
 
-        bool LoadData(Stream stream);
+        void LoadData(Stream stream);
         
-        bool SaveData(Stream stream);
+        void SaveData(Stream stream);
 
         void Start();
 

@@ -5,6 +5,11 @@ namespace Backupper.Common
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class WorkerType : Attribute
     {
-        public string Identifier { get; set; }
+        public WorkerType(string identifier)
+        {
+            Identifier = identifier;
+        }
+
+        public string Identifier { get; }
     }
 }

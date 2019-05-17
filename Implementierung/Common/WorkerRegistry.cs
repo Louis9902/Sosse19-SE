@@ -2,17 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Backupper.Common
 {
-    public class WorkerTypes
+    public class WorkerRegistry
     {
         private readonly IDictionary<Guid, Type> mapGuidToType = new Dictionary<Guid, Type>();
         private readonly IDictionary<Type, Guid> mapTypeToGuid = new Dictionary<Type, Guid>();
 
-        private WorkerTypes()
+        public WorkerRegistry()
         {
-            ScanAssembly(Assembly.GetCallingAssembly());
+            ScanAssembly(Assembly.GetExecutingAssembly());
+        }
+        
+        public static explicit operator string(WorkerRegistry workers)
+        {
+            var builder = new StringBuilder();
+            foreach (var pair in workers.mapGuidToType)
+            {
+                builder.AppendLine($"{pair.Value.Name}@{pair.Key}");
+            }
+            return builder.ToString();
         }
 
         public bool TryGet(Guid group, out Type clazz)
@@ -51,7 +62,9 @@ namespace Backupper.Common
                 return result;
             }
 
+            var worker = typeof(IWorker);
             var results = from clazz in archive.GetTypes().AsParallel()
+                where worker.IsAssignableFrom(clazz)
                 let annotation = clazz.GetCustomAttribute<WorkerType>()
                 let identifier = GetIdentifier(annotation?.Identifier)
                 where identifier != Guid.Empty

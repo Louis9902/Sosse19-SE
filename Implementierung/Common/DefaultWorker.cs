@@ -4,17 +4,37 @@ using System.Threading;
 
 namespace Backupper.Common
 {
-    public abstract class BasicWorker : IWorker
+    public abstract class DefaultWorker : IWorker
     {
         private static readonly ThreadLocal<WorkerInfo> Info = new ThreadLocal<WorkerInfo>();
 
         public Guid Group { get; }
         public Guid Identifier { get; }
 
-        protected BasicWorker()
+        protected DefaultWorker()
         {
             Group = Info.Value.Group;
             Identifier = Info.Value.Identifier;
+        }
+
+        public static T Create<T>(WorkerRegistry registry, Action<T> action = null) where T : IWorker
+        {
+            if (!registry.TryGet(typeof(T), out var group))
+            {
+                throw new ArgumentException($"Unable to find group identifier for {typeof(T)}");
+            }
+
+            var worker = NewInstance<T>(group, Guid.NewGuid());
+            action?.Invoke(worker);
+            return worker;
+        }
+
+        public static T NewInstance<T>(Guid group, Guid identifier) where T : IWorker
+        {
+            Info.Value = new WorkerInfo {Group = group, Identifier = identifier};
+            var worker = Activator.CreateInstance<T>();
+            Info.Value = null;
+            return worker;
         }
 
         public static IWorker NewInstance(Type clazz, Guid group, Guid identifier)
@@ -31,14 +51,12 @@ namespace Backupper.Common
             public Guid Identifier { get; set; }
         }
 
-        public bool LoadData(Stream stream)
+        public virtual void LoadData(Stream stream)
         {
-            return true;
         }
 
-        public bool SaveData(Stream stream)
+        public virtual void SaveData(Stream stream)
         {
-            return true;
         }
 
         public abstract void Start();
