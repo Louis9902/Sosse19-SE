@@ -17,20 +17,20 @@ namespace Backupper.Core
         {
             var regs = new WorkerRegistry();
             var conf = new WorkerConfiguration(FileConfig, regs);
-            Console.WriteLine((string) regs);
+//            Console.WriteLine((string) regs);
 
             var workers = new Dictionary<Guid, IWorker>();
 
-            if (!conf.Load(workers))
-            {
-                var worker = DefaultWorker.Create<BackupWorker>(regs, arg =>
-                {
-                    arg.Source = "C://Some/Path/Source";
-                    arg.Target = "C://Some/Path/Target";
-                });
-                workers[worker.Identifier] = worker;
-                Console.WriteLine("--> ADDED NEW");
-            }
+//            if (!conf.Load(workers))
+//            {
+//                var worker = DefaultWorker.Create<BackupWorker>(regs, arg =>
+//                {
+//                    arg.Source = "C://Some/Path/Source";
+//                    arg.Target = "C://Some/Path/Target";
+//                });
+//                workers[worker.Label] = worker;
+//                Console.WriteLine("--> ADDED NEW");
+//            }
 
             Console.WriteLine(workers.Count);
             foreach (var pair in workers)

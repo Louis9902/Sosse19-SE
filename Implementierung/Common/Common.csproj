@@ -38,8 +38,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DefaultWorker.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="IO\IExternalizable.cs" />
+    <Compile Include="IO\TypeMapping.cs" />
     <Compile Include="Workers\BackupWorker.cs" />
+    <Compile Include="Workers\DefaultWorker.cs" />
+    <Compile Include="Workers\Properties\Properties.cs" />
+    <Compile Include="Workers\Properties\Property.cs" />
     <Compile Include="WorkerType.cs" />
     <Compile Include="Extensions\IOExtensions.cs" />
     <Compile Include="IWorker.cs" />

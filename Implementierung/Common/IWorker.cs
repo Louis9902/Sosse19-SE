@@ -3,18 +3,15 @@ using System.IO;
 
 namespace Backupper.Common
 {
-    public interface IWorker
+    public interface IWorker : IExternalizable
     {
         Guid Group { get; }
-        Guid Identifier { get; }
+        Guid Label { get; }
 
-        void LoadData(Stream stream);
-        
-        void SaveData(Stream stream);
+        Properties Properties { get; }
 
         void Start();
 
         void Abort();
-
     }
 }

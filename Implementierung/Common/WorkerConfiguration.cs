@@ -36,16 +36,17 @@ namespace Backupper.Common
                             continue;
                         }
 
-                        var worker = DefaultWorker.NewInstance(clazz, group, identifier);
+                        var worker = DefaultWorker.NewInstance(@group, identifier, clazz);
 
                         var chunksLength = reader.ReadInt32();
                         var chunksBuffer = reader.ReadBytes(chunksLength);
 
                         try
                         {
-                            using (var buffer = new MemoryStream(chunksBuffer))
+                            var buffer = new MemoryStream(chunksBuffer);
+                            using (var bufferReader = new BinaryReader(buffer))
                             {
-                                worker.LoadData(buffer);
+                                worker.LoadExternal(bufferReader);
                             }
                         }
                         catch (Exception ex)
@@ -54,7 +55,7 @@ namespace Backupper.Common
                             continue;
                         }
 
-                        workers[worker.Identifier] = worker;
+                        workers[worker.Label] = worker;
                     }
                 }
 
@@ -98,14 +99,15 @@ namespace Backupper.Common
                         }
 
                         writer.Write(worker.Group);
-                        writer.Write(worker.Identifier);
+                        writer.Write(worker.Label);
 
                         byte[] chunks;
                         try
                         {
-                            using (var buffer = new MemoryStream())
+                            var buffer = new MemoryStream();
+                            using (var bufferWriter = new BinaryWriter(buffer))
                             {
-                                worker.SaveData(buffer);
+                                worker.SaveExternal(bufferWriter);
                                 chunks = buffer.ToArray();
                             }
                         }

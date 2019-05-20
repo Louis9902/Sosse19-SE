@@ -11,19 +11,11 @@ namespace Backupper.Common
         private readonly IDictionary<Guid, Type> mapGuidToType = new Dictionary<Guid, Type>();
         private readonly IDictionary<Type, Guid> mapTypeToGuid = new Dictionary<Type, Guid>();
 
+        private readonly TypeMapping<Guid, Type> mapping = new TypeMapping<Guid, Type>();
+        
         public WorkerRegistry()
         {
             ScanAssembly(Assembly.GetExecutingAssembly());
-        }
-        
-        public static explicit operator string(WorkerRegistry workers)
-        {
-            var builder = new StringBuilder();
-            foreach (var pair in workers.mapGuidToType)
-            {
-                builder.AppendLine($"{pair.Value.Name}@{pair.Key}");
-            }
-            return builder.ToString();
         }
 
         public bool TryGet(Guid group, out Type clazz)

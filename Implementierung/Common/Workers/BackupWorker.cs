@@ -7,7 +7,13 @@ namespace Backupper.Common.Workers
     public class BackupWorker : DefaultWorker
     {
         
-        public string Source { get; set; }
+//        public string Source
+//        {
+//            get => (string) Properties["source"];
+//            set => Properties["source"] = value;
+//        }
+        
+        
         public string Target { get; set; }
         
         public override void Start()
@@ -18,20 +24,6 @@ namespace Backupper.Common.Workers
         public override void Abort()
         {
             throw new NotImplementedException();
-        }
-
-        public override void LoadData(Stream stream)
-        {
-            var reader = new BinaryReader(stream);
-            Source = reader.ReadString();
-            Target = reader.ReadString();
-        }
-
-        public override void SaveData(Stream stream)
-        {
-            var writer = new BinaryWriter(stream);
-            writer.Write(Source);
-            writer.Write(Target);
         }
     }
 }
