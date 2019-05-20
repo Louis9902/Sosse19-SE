@@ -16,7 +16,7 @@ namespace Backupper.Core
         public static void Main(string[] args)
         {
             var regs = new WorkerRegistry();
-            var conf = new WorkerConfiguration(FileConfig, regs);
+            var conf = new Common.WorkerConfigurator(FileConfig, regs);
 //            Console.WriteLine((string) regs);
 
             var workers = new Dictionary<Guid, IWorker>();

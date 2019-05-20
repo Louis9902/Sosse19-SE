@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace Backupper.Common
@@ -16,11 +17,9 @@ namespace Backupper.Common
 
         public abstract void LoadExternal(BinaryReader reader);
 
-        public static explicit operator string(Property instance)
+        public static implicit operator string(Property instance)
         {
             return instance.Value is string value ? value : instance.Value.ToString();
         }
     }
-
-    
 }

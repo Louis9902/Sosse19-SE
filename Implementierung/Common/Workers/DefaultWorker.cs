@@ -1,9 +1,8 @@
 using System;
-using System.IO;
 using System.Threading;
-using Backupper.Common.Extensions;
+using Backupper.Common.Workers.Properties;
 
-namespace Backupper.Common
+namespace Backupper.Common.Workers
 {
     public abstract class DefaultWorker : IWorker
     {
@@ -12,34 +11,12 @@ namespace Backupper.Common
         public Guid Group { get; }
         public Guid Label { get; }
 
-        public Properties Properties { get; } = new Properties();
+        public PropertyMap Properties { get; } = new PropertyMap();
 
         protected DefaultWorker()
         {
             Group = Info.Value.Group;
             Label = Info.Value.Label;
-        }
-
-        public void SaveExternal(BinaryWriter writer)
-        {
-            Properties.SaveExternal(writer);
-        }
-
-        public void LoadExternal(BinaryReader reader)
-        {
-            Properties.LoadExternal(reader);
-        }
-
-        public static T Create<T>(WorkerRegistry registry, Action<T> action = null) where T : IWorker
-        {
-            if (!registry.TryGet(typeof(T), out var group))
-            {
-                throw new ArgumentException($"Unable to find group identifier for {typeof(T)}");
-            }
-
-            var worker = NewInstance<T>(group, Guid.NewGuid());
-            action?.Invoke(worker);
-            return worker;
         }
 
         public static T NewInstance<T>(Guid group, Guid label) where T : IWorker
@@ -50,10 +27,10 @@ namespace Backupper.Common
             return worker;
         }
 
-        public static IWorker NewInstance(Guid group, Guid label, Type clazz)
+        public static IWorker NewInstance(Guid group, Guid label, Type type)
         {
             Info.Value = new WorkerInfo {Group = group, Label = label};
-            var worker = Activator.CreateInstance(clazz);
+            var worker = Activator.CreateInstance(type);
             Info.Value = null;
             return (IWorker) worker;
         }
@@ -64,8 +41,8 @@ namespace Backupper.Common
             public Guid Label { get; set; }
         }
 
-        public abstract void Start();
+        public abstract void StartWorker();
 
-        public abstract void Abort();
+        public abstract void AbortWorker();
     }
 }

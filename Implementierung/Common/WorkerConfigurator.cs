@@ -1,20 +1,76 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using Backupper.Common.Extensions;
+using Backupper.Common.IO;
+using Backupper.Common.Workers;
 
 namespace Backupper.Common
 {
-    public class WorkerConfiguration
+    public class WorkerConfigurator
     {
-        private readonly WorkerRegistry registry;
+        private readonly TypeBindings<Guid> bindings = new TypeBindings<Guid>();
 
         private string Configuration { get; }
 
-        public WorkerConfiguration(string configuration, WorkerRegistry regs)
+        public WorkerConfigurator(string configuration)
         {
             Configuration = configuration;
-            registry = regs;
+            RegisterBindings();
+        }
+
+        private void RegisterBindings()
+        {
+            var running = Assembly.GetExecutingAssembly();
+            var calling = Assembly.GetCallingAssembly();
+
+            RegisterTypes(running);
+            if (running != calling)
+                RegisterTypes(calling);
+        }
+
+        private void RegisterTypes(Assembly assembly)
+        {
+            Guid GetIdentifier(string str)
+            {
+                Guid.TryParse(str, out var result);
+                return result;
+            }
+
+            var worker = typeof(IWorker);
+            var results = from clazz in assembly.GetTypes().AsParallel()
+                where worker.IsAssignableFrom(clazz)
+                let workerType = clazz.GetCustomAttribute<WorkerType>()
+                where workerType?.Identifier != Guid.Empty
+                select new KeyValuePair<Guid, Type>(workerType.Identifier, clazz);
+
+            bindings.Register(results);
+        }
+
+        public T Create<T>(Action<T> action = null) where T : IWorker
+        {
+            if (!bindings.GetOrNothing(typeof(T), out var group))
+            {
+                throw new ArgumentException($"Unable to find group identifier for {typeof(T)}");
+            }
+
+            var worker = DefaultWorker.NewInstance<T>(group, Guid.NewGuid());
+            action?.Invoke(worker);
+            return worker;
+        }
+
+        public IWorker Create(Type type, Action<IWorker> action = null)
+        {
+            if (!bindings.GetOrNothing(type, out var group))
+            {
+                throw new ArgumentException($"Unable to find group identifier for {type}");
+            }
+
+            var worker = DefaultWorker.NewInstance(group, Guid.NewGuid(), type);
+            action?.Invoke(worker);
+            return worker;
         }
 
         public bool Load(IDictionary<Guid, IWorker> workers)

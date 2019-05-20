@@ -16,12 +16,12 @@ namespace Backupper.Common.Workers
         
         public string Target { get; set; }
         
-        public override void Start()
+        public override void StartWorker()
         {
             throw new NotImplementedException();
         }
 
-        public override void Abort()
+        public override void AbortWorker()
         {
             throw new NotImplementedException();
         }
