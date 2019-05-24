@@ -1,11 +1,12 @@
 namespace WorksKit.Worker
 {
-    public class BackupWorker : BasicWorker
+    [WorkerType("2258b292-896a-4547-937c-6f0e865d5419")]
+    public class SyncWorker : BasicWorker
     {
         private readonly Preference<string> source;
         private readonly Preference<string> target;
 
-        public BackupWorker()
+        public SyncWorker()
         {
             source = Preferences.Preference("source", fallback: "c://example");
             target = Preferences.Preference("target", fallback: "c://example");

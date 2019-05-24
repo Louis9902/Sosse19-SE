@@ -1,15 +1,16 @@
 using System;
 using System.Collections;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using WorksKit.IO;
 
 namespace WorksKit.Worker
 {
-    public abstract class BasicWorker : IWorker
+    public abstract class BasicWorker : IWorker, IExternalizable
     {
         private static readonly ThreadLocal<WorkerInfo> Info = new ThreadLocal<WorkerInfo>();
-        private static readonly IFormatter Formatter = new BinaryFormatter();
 
         public Guid Group { get; }
         public Guid Label { get; }
@@ -41,6 +42,16 @@ namespace WorksKit.Worker
         public abstract void StartWorker();
 
         public abstract void AbortWorker();
+
+        public void LoadExternal(Stream stream)
+        {
+            Preferences.LoadExternal(stream);
+        }
+
+        public void SaveExternal(Stream stream)
+        {
+            Preferences.SaveExternal(stream);
+        }
 
         private class WorkerInfo
         {

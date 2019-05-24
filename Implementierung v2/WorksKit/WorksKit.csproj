@@ -11,6 +11,7 @@
     <AssemblyName>WorksKit</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -38,7 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IO\DefaultReader.cs" />
     <Compile Include="IO\IExternalizable.cs" />
+    <Compile Include="IO\TypeBindings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Workers.cs" />
     <Compile Include="WorkerTypes.cs" />

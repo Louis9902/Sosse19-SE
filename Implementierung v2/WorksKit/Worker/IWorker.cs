@@ -1,6 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using WorksKit.IO;
 
 namespace WorksKit.Worker
 {
@@ -37,8 +41,10 @@ namespace WorksKit.Worker
         }
     }
 
-    public class Preferences : IEnumerable
+    public class Preferences : IEnumerable, IExternalizable
     {
+        private static readonly IFormatter Formatter = new BinaryFormatter();
+
         private IDictionary derivations = new Hashtable(); // cache for preference objects
         private IDictionary preferences = new Hashtable(); // cache for preference options
 
@@ -67,6 +73,16 @@ namespace WorksKit.Worker
         public IEnumerator GetEnumerator()
         {
             return derivations.Values.GetEnumerator();
+        }
+
+        public void LoadExternal(Stream stream)
+        {
+            preferences = Formatter.Deserialize(stream) as Hashtable;
+        }
+
+        public void SaveExternal(Stream stream)
+        {
+            Formatter.Serialize(stream, preferences);
         }
     }
 
