@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace WorksKit.IO
+namespace WorksKit.Utilities
 {
-    public class TypeBindings<TBin>
+    public class TypeObjectBindings<TBin>
     {
         private readonly Dictionary<TBin, Type> mapBinToObj = new Dictionary<TBin, Type>();
         private readonly Dictionary<Type, TBin> mapObjToBin = new Dictionary<Type, TBin>();
@@ -25,14 +25,14 @@ namespace WorksKit.IO
                 case InsertMode.Insert:
                     goto Insert;
 
-                case InsertMode.Return:
+                case InsertMode.DupleReturn:
                     if (HasBinBinding(bin) || HasObjBinding(type))
                         return false;
                     goto Insert;
 
-                case InsertMode.Throws:
+                case InsertMode.DupleThrows:
                     if (HasBinBinding(bin) || HasObjBinding(type))
-                        throw new DuplicateBindingException("Trying to add duplicate binding", bin, type);
+                        throw new ArgumentException($"Trying to add duplicate binding {bin} for {type}");
                     goto Insert;
 
                 default:
@@ -47,6 +47,10 @@ namespace WorksKit.IO
 
         public void Register(IEnumerable<KeyValuePair<TBin, Type>> pairs)
         {
+            foreach (var pair in pairs)
+            {
+                Register(pair.Key, pair.Value, InsertMode.DupleReturn);
+            }
         }
 
         public bool GetOrNothing(TBin bin, out Type type)
@@ -58,7 +62,7 @@ namespace WorksKit.IO
         {
             if (mapBinToObj.TryGetValue(bin, out var value)) return value;
             value = func(bin);
-            Register(bin, value, InsertMode.Throws);
+            Register(bin, value, InsertMode.DupleThrows);
             return value;
         }
 
@@ -71,7 +75,7 @@ namespace WorksKit.IO
         {
             if (mapObjToBin.TryGetValue(type, out var value)) return value;
             value = func(type);
-            Register(value, type, InsertMode.Throws);
+            Register(value, type, InsertMode.DupleThrows);
             return value;
         }
     }
@@ -79,16 +83,7 @@ namespace WorksKit.IO
     public enum InsertMode : byte
     {
         Insert,
-        Return,
-        Throws,
-    }
-
-    public sealed class DuplicateBindingException : ArgumentException
-    {
-        public DuplicateBindingException(string message, object bin, object obj) : base(message)
-        {
-            Data["bin"] = bin;
-            Data["obj"] = obj;
-        }
+        DupleReturn,
+        DupleThrows,
     }
 }

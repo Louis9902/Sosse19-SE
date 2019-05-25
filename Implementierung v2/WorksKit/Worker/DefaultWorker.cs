@@ -1,29 +1,26 @@
 using System;
-using System.Collections;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using WorksKit.IO;
+using WorksKit.Worker.Preferences;
 
 namespace WorksKit.Worker
 {
-    public abstract class BasicWorker : IWorker, IExternalizable
+    public abstract class DefaultWorker : IWorker
     {
         private static readonly ThreadLocal<WorkerInfo> Info = new ThreadLocal<WorkerInfo>();
 
-        public Guid Group { get; }
-        public Guid Label { get; }
-
-        public Preferences Preferences { get; } = new Preferences();
-
-        protected BasicWorker()
+        protected DefaultWorker()
         {
             Group = Info.Value.Group;
             Label = Info.Value.Label;
         }
 
-        public static T New<T>(Guid group, Guid label) where T : IWorker
+        public Guid Group { get; }
+        public Guid Label { get; }
+
+        public PreferenceSet Preferences { get; } = new PreferenceSet();
+
+        public static T Instantiate<T>(Guid group, Guid label) where T : IWorker
         {
             Info.Value = new WorkerInfo {Group = group, Label = label};
             var worker = Activator.CreateInstance<T>();
@@ -31,7 +28,7 @@ namespace WorksKit.Worker
             return worker;
         }
 
-        public static IWorker New(Type type, Guid group, Guid label)
+        public static IWorker Instantiate(Type type, Guid group, Guid label)
         {
             Info.Value = new WorkerInfo {Group = group, Label = label};
             var worker = Activator.CreateInstance(type);
@@ -43,14 +40,14 @@ namespace WorksKit.Worker
 
         public abstract void AbortWorker();
 
-        public void LoadExternal(Stream stream)
+        public void LoadPreferences(Stream stream)
         {
-            Preferences.LoadExternal(stream);
+            Preferences.Load(stream);
         }
 
-        public void SaveExternal(Stream stream)
+        public void SavePreferences(Stream stream)
         {
-            Preferences.SaveExternal(stream);
+            Preferences.Save(stream);
         }
 
         private class WorkerInfo
