@@ -14,8 +14,15 @@ namespace WorksKit
             Configuration = configuration;
         }
 
-        public string Configuration { get; }
+        private string Configuration { get; }
 
+        /// <summary>
+        /// Allows to create a new worker object, this object will get a new guid and the corresponding
+        /// group identifier from the <see cref="WorkerGroups"/>
+        /// </summary>
+        /// <typeparam name="T">The type of the worker to create</typeparam>
+        /// <returns>the new worker read toi be instantiated</returns>
+        /// <exception cref="ArgumentException">If the type it not registered in the group registry</exception>
         public static T CreateNewWorker<T>() where T : IWorker
         {
             if (WorkerGroups.ObjectBindings.GetOrNothing(typeof(T), out var group))
@@ -30,8 +37,6 @@ namespace WorksKit
         {
             try
             {
-                CreateEmptyFile();
-
                 using (var stream = new FileStream(Configuration, FileMode.Open, FileAccess.Read))
                 {
                     var reader = new BinaryReader(stream);
@@ -92,6 +97,7 @@ namespace WorksKit
 
         public bool Save(IDictionary<Guid, IWorker> workers)
         {
+            if (!File.Exists(Configuration)) return false;
             try
             {
                 using (var stream = new FileStream(Configuration, FileMode.Create, FileAccess.Write))
@@ -143,20 +149,6 @@ namespace WorksKit
             }
 
             return true;
-        }
-
-
-        /// <summary>
-        /// Creates an empty config file, that contains 0 workers. Uses ConfigFilePath
-        /// </summary>
-        public void CreateEmptyFile()
-        {
-            if (File.Exists(Configuration)) return;
-
-
-            FileStream file = File.Create(Configuration);
-            file.Write(new byte[] { 0, 0, 0, 0 }, 0, 4);
-            file.Close();
         }
     }
 }
