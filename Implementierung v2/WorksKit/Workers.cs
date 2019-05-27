@@ -20,6 +20,8 @@ namespace WorksKit
         {
             try
             {
+                CreateEmptyFile();
+
                 using (var stream = new FileStream(Configuration, FileMode.Open, FileAccess.Read))
                 {
                     var reader = new BinaryReader(stream);
@@ -131,6 +133,20 @@ namespace WorksKit
             }
 
             return true;
+        }
+
+
+        /// <summary>
+        /// Creates an empty config file, that contains 0 workers. Uses ConfigFilePath
+        /// </summary>
+        public void CreateEmptyFile()
+        {
+            if (File.Exists(Configuration)) return;
+
+
+            FileStream file = File.Create(Configuration);
+            file.Write(new byte[] { 0, 0, 0, 0 }, 0, 4);
+            file.Close();
         }
     }
 }
