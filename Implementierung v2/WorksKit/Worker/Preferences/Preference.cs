@@ -28,9 +28,9 @@ namespace WorksKit.Worker.Preferences
 
         private void SetDefault(T value)
         {
-            if (!(value is null)) Value = value;
+            if (value != null && !value.Equals(default(T))) Value = value;
         }
-        
+
         public static implicit operator T(Preference<T> property)
         {
             return property.Value;
