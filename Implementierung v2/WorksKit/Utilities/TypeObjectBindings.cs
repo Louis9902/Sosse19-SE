@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace WorksKit.Utilities
 {
+    /// <summary>
+    /// Binds C# Types to a specified value, this is used to have a index of classes to a fixed and persistent.  
+    /// </summary>
+    /// <typeparam name="TBin">The type to witch the value will be bound</typeparam>
     public class TypeObjectBindings<TBin>
     {
         private readonly Dictionary<TBin, Type> mapBinToObj = new Dictionary<TBin, Type>();
@@ -18,6 +22,15 @@ namespace WorksKit.Utilities
             return mapObjToBin.ContainsKey(type);
         }
 
+        /// <summary>
+        /// Will register a specified type to a value. This will depending on the mode change the registry.
+        /// </summary>
+        /// <param name="bin"></param>
+        /// <param name="type"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public bool Register(TBin bin, Type type, InsertMode mode = InsertMode.Insert)
         {
             switch (mode)
