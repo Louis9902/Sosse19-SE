@@ -21,6 +21,8 @@ namespace GUI
         Dictionary<Guid, IWorker> dictionary = new Dictionary<Guid, IWorker>();
         Workers w = new Workers(ConfigFilePath);
 
+        bool changes = false;
+
         public Form1()
         {
             InitializeComponent();
@@ -81,12 +83,13 @@ namespace GUI
 
         private void dataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (true)
+            changes = true;
+            if (dataGridView.Rows[e.RowIndex].Cells[0].Value == null && dataGridView.Rows[e.RowIndex].Cells[1].Value == null)
             {
+                //If a new line is being edited, we have to add a new empty line
+                dataGridView.Rows.AddCopy(dataGridView.Rows.Count - 1);
+            }    
 
-            }
-            dataGridView.Rows.AddCopy(dataGridView.Rows.Count - 1);
-            
             DialogResult result = folderBrowserDialog1.ShowDialog();
             dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = folderBrowserDialog1.SelectedPath;
             
@@ -97,7 +100,7 @@ namespace GUI
             
             if (e.RowIndex < 0)
                 return;
-
+            changes = true;
             if (dictionary.Count <= e.RowIndex)
             {
                 SyncWorker newWorker =  Workers.CreateNewWorker<SyncWorker>();
@@ -122,10 +125,32 @@ namespace GUI
 
         private void dataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
+            changes = true;
             for (int row = e.RowIndex; row < e.RowIndex + e.RowCount; row++)
             {
                 dictionary.Remove(dictionary.ElementAt(row).Value.Label);
             }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.WindowsShutDown)
+            {
+                Button_OK_Click(sender, new EventArgs());
+            }
+            else if(e.CloseReason == CloseReason.UserClosing && changes)
+            {
+                DialogResult result = MessageBox.Show("Do you want to save changes?", "Warning", MessageBoxButtons.YesNoCancel);
+                if (result == DialogResult.Yes)
+                {
+                    Button_OK_Click(sender, new EventArgs());
+                }
+                else if(result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
+            }
+            
         }
     }
 }

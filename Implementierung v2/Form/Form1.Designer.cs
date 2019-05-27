@@ -62,9 +62,8 @@
             this.dataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dataGridView.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView.Margin = new System.Windows.Forms.Padding(6);
             this.dataGridView.Name = "dataGridView";
-            this.dataGridView.Size = new System.Drawing.Size(992, 842);
+            this.dataGridView.Size = new System.Drawing.Size(496, 425);
             this.dataGridView.TabIndex = 0;
             this.dataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellDoubleClick);
             this.dataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellValueChanged);
@@ -92,10 +91,9 @@
             // 
             // Button_OK
             // 
-            this.Button_OK.Location = new System.Drawing.Point(6, 4);
-            this.Button_OK.Margin = new System.Windows.Forms.Padding(6);
+            this.Button_OK.Location = new System.Drawing.Point(3, 2);
             this.Button_OK.Name = "Button_OK";
-            this.Button_OK.Size = new System.Drawing.Size(150, 44);
+            this.Button_OK.Size = new System.Drawing.Size(75, 23);
             this.Button_OK.TabIndex = 1;
             this.Button_OK.Text = "OK";
             this.Button_OK.UseVisualStyleBackColor = true;
@@ -103,10 +101,9 @@
             // 
             // Button_Cancel
             // 
-            this.Button_Cancel.Location = new System.Drawing.Point(168, 4);
-            this.Button_Cancel.Margin = new System.Windows.Forms.Padding(6);
+            this.Button_Cancel.Location = new System.Drawing.Point(84, 2);
             this.Button_Cancel.Name = "Button_Cancel";
-            this.Button_Cancel.Size = new System.Drawing.Size(150, 44);
+            this.Button_Cancel.Size = new System.Drawing.Size(75, 23);
             this.Button_Cancel.TabIndex = 2;
             this.Button_Cancel.Text = "Cancel";
             this.Button_Cancel.UseVisualStyleBackColor = true;
@@ -118,7 +115,6 @@
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Margin = new System.Windows.Forms.Padding(6);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -132,21 +128,21 @@
             this.splitContainer1.Panel2.Controls.Add(this.Button_OK);
             this.splitContainer1.Panel2.Controls.Add(this.Button_Cancel);
             this.splitContainer1.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.splitContainer1.Size = new System.Drawing.Size(992, 883);
-            this.splitContainer1.SplitterDistance = 842;
-            this.splitContainer1.SplitterWidth = 8;
+            this.splitContainer1.Panel2MinSize = 20;
+            this.splitContainer1.Size = new System.Drawing.Size(496, 459);
+            this.splitContainer1.SplitterDistance = 425;
             this.splitContainer1.TabIndex = 3;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(992, 883);
+            this.ClientSize = new System.Drawing.Size(496, 459);
             this.Controls.Add(this.splitContainer1);
-            this.Margin = new System.Windows.Forms.Padding(6);
-            this.MinimumSize = new System.Drawing.Size(374, 319);
+            this.MinimumSize = new System.Drawing.Size(195, 185);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
