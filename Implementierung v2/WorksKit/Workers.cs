@@ -16,6 +16,16 @@ namespace WorksKit
 
         public string Configuration { get; }
 
+        public static T CreateNewWorker<T>() where T : IWorker
+        {
+            if (WorkerGroups.ObjectBindings.GetOrNothing(typeof(T), out var group))
+            {
+                return DefaultWorker.Instantiate<T>(group, Guid.NewGuid());
+            }
+
+            throw new ArgumentException("missing group for worker");
+        }
+
         public bool Load(IDictionary<Guid, IWorker> workers)
         {
             try

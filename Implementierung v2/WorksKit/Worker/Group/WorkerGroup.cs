@@ -2,6 +2,9 @@ using System;
 
 namespace WorksKit.Worker.Group
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class WorkerGroup : Attribute
     {
