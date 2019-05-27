@@ -15,7 +15,7 @@ using WorksKit.Worker.Preferences;
 
 namespace GUI
 {
-    public partial class Form1 : Form
+    public partial class Form1 : System.Windows.Forms.Form
     {
         static string ConfigFilePath = "Workers.dat";
         Dictionary<Guid, IWorker> dictionary = new Dictionary<Guid, IWorker>();
@@ -125,6 +125,12 @@ namespace GUI
 
         private void dataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
+            if (dictionary.Count == 0)
+            {
+                //Some systems send some RowsRemoved-events at startup. 
+                //Those are stopped here, because otherwise the app crashes
+                return;
+            }
             changes = true;
             for (int row = e.RowIndex; row < e.RowIndex + e.RowCount; row++)
             {
