@@ -1,0 +1,17 @@
+@startuml
+class SyncWorker {
+    - <<readonly>> source : Preference<string>
+    - <<readonly>> target : Preference<string>
+    - <<readonly>> caches : ListPreference<string>
+    + SyncWorker()
+    + Source : string <<get>> <<set>>
+    + Target : string <<get>> <<set>>
+    + <<override>> StartWorker() : void
+    - OnRenamed(sender:object, e:RenamedEventArgs) : void
+    - OnChanged(source:object, e:FileSystemEventArgs) : void
+    + <<override>> AbortWorker() : void
+    + <<override>> ToString() : string
+    - {static} DirectoryCopy(sourceDirName:string, destDirName:string, copySubDirs:bool) : void
+}
+DefaultWorker <|-- SyncWorker
+@enduml

@@ -1,0 +1,17 @@
+@startuml
+class PreferenceSet {
+    - {static} <<readonly>> Formatter : IFormatter
+    - derivations : IDictionary
+    - preferences : IDictionary
+    - provider : IPreferenceProvider
+    + PreferenceSet()
+    - HasPreferenceCache(name:string, preference:Preference<T>) : bool
+    - HasPreferenceListCache(name:string, preference:ListPreference<T>) : bool
+    + Preference(name:string, value:T, fallback:T) : Preference<T>
+    + ListPreference(name:string, values:IEnumerable<T>) : ListPreference<T>
+    + GetEnumerator() : IEnumerator
+    + Load(stream:Stream) : void
+    + Save(stream:Stream) : void
+}
+IEnumerable <|-- PreferenceSet
+@enduml

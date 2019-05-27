@@ -1,0 +1,35 @@
+@startuml
+!include .\\Form\Form1.puml
+!include .\\Form\Form1.Designer.puml
+!include .\\Form\Program.puml
+!include .\\WorkerService\Program.puml
+!include .\\WorksKit\Logger.puml
+!include .\\WorksKit\Workers.puml
+!include .\\Form\Properties\AssemblyInfo.puml
+!include .\\Form\Properties\Resources.Designer.puml
+!include .\\Form\Properties\Settings.Designer.puml
+!include .\\WorkerService\Properties\AssemblyInfo.puml
+!include .\\WorksKit\Properties\AssemblyInfo.puml
+!include .\\WorksKit\Utilities\ActuallyAdditions.puml
+!include .\\WorksKit\Utilities\TypeObjectBindings.puml
+!include .\\WorksKit\Worker\BackupWorker.puml
+!include .\\WorksKit\Worker\DefaultWorker.puml
+!include .\\WorksKit\Worker\IWorker.puml
+!include .\\WorksKit\Worker\SyncWorker.puml
+!include .\\Form\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.puml
+!include .\\Form\obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.puml
+!include .\\Form\obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.puml
+!include .\\WorkerService\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.puml
+!include .\\WorkerService\obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.puml
+!include .\\WorkerService\obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.puml
+!include .\\WorksKit\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.puml
+!include .\\WorksKit\obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.puml
+!include .\\WorksKit\obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.puml
+!include .\\WorksKit\Worker\Group\WorkerGroup.puml
+!include .\\WorksKit\Worker\Group\WorkerGroups.puml
+!include .\\WorksKit\Worker\Preferences\DictionaryPreferenceProvider.puml
+!include .\\WorksKit\Worker\Preferences\IPreferenceProvider.puml
+!include .\\WorksKit\Worker\Preferences\ListPreference.puml
+!include .\\WorksKit\Worker\Preferences\Preference.puml
+!include .\\WorksKit\Worker\Preferences\PreferenceSet.puml
+@enduml

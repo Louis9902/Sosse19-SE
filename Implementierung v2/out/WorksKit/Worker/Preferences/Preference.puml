@@ -1,0 +1,11 @@
+@startuml
+class "Preference`1"<T> {
+    - <<readonly>> provider : IPreferenceProvider
+    + Preference(preferences:IPreferenceProvider, name:string, value:T, fallback:T)
+    + Name : string <<get>>
+    + Value : T <<get>> <<set>>
+    + Fallback : T <<get>>
+    + HasValueSet : bool <<get>>
+    - SetDefault(value:T) : void
+}
+@enduml

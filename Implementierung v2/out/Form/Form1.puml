@@ -1,0 +1,17 @@
+@startuml
+class Form1 <<partial>> {
+    {static} ConfigFilePath : string = "Workers.dat"
+    dictionary : Dictionary<Guid, IWorker>
+    w : Workers
+    changes : bool = false
+    + Form1()
+    - Form1_Load(sender:object, e:EventArgs) : void
+    - Button_OK_Click(sender:object, e:EventArgs) : void
+    - Button_Cancel_Click(sender:object, e:EventArgs) : void
+    - dataGridView_CellDoubleClick(sender:object, e:DataGridViewCellEventArgs) : void
+    - dataGridView_CellValueChanged(sender:object, e:DataGridViewCellEventArgs) : void
+    - dataGridView_RowsRemoved(sender:object, e:DataGridViewRowsRemovedEventArgs) : void
+    - Form1_FormClosing(sender:object, e:FormClosingEventArgs) : void
+}
+Form <|-- Form1
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+class ActuallyAdditions <<static>> {
+    + {static} ReadGuid(reader:BinaryReader) : Guid
+    + {static} Write(writer:BinaryWriter, guid:Guid) : void
+}
+@enduml
