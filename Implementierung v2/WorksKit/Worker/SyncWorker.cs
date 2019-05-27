@@ -1,4 +1,5 @@
 using System;
+using System.Data.SqlClient;
 using System.IO;
 using WorksKit.Worker.Group;
 using WorksKit.Worker.Preferences;
@@ -52,12 +53,39 @@ namespace WorksKit.Worker
 
         private void OnRenamed(object sender, RenamedEventArgs e)
         {
-            throw new NotImplementedException();
+            var oldTargetPath = e.OldFullPath.Replace(Source, Target);
+            var newTargetPath = e.FullPath.Replace(Source, Target);
+
+
+            if (Directory.Exists(e.FullPath))
+            {
+                Directory.Move(oldTargetPath, newTargetPath);
+            }
+            else
+            {
+                if (File.Exists(newTargetPath)) File.Move(oldTargetPath, newTargetPath);
+                else throw new NotImplementedException();
+            }
         }
 
-        private static void OnChanged(object source, FileSystemEventArgs e)
+        private void OnChanged(object source, FileSystemEventArgs e)
         {
-            throw new NotImplementedException();
+            var targetPath = e.FullPath.Replace(Source, Target);
+            switch (e.ChangeType)
+            {
+                case WatcherChangeTypes.Changed:
+                case WatcherChangeTypes.Created:
+                {
+                    if (!File.Exists(e.FullPath)) return;
+                    if (File.Exists(targetPath)) File.Copy(e.FullPath, targetPath);
+                    break;
+                }
+                case WatcherChangeTypes.Deleted:
+                {
+                    if (File.Exists(targetPath)) File.Delete(targetPath);
+                    break;
+                }
+            }
         }
 
         public override void AbortWorker()
