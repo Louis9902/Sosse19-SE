@@ -16,9 +16,9 @@ namespace WorksKit.Worker
 
         public SyncWorker()
         {
-            source = Preferences.Preference("source", fallback: "c://fallback/source");
-            target = Preferences.Preference("target", fallback: "c://fallback/target");
-            caches = Preferences.ListPreference<string>("caches");
+            source = Preferences.Preference<string>("source");
+            target = Preferences.Preference<string>("target");
+            caches = Preferences.ListPreference<string>("caches").MakeHidden();
         }
 
         public string Source

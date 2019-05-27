@@ -9,21 +9,14 @@ namespace WorksKit
 {
     public class Workers
     {
-        public Workers(string configuration)
+        private readonly string configuration;
+
+        public Workers(string path)
         {
-            Configuration = configuration;
+            configuration = path;
         }
 
-        private string Configuration { get; }
-
-        /// <summary>
-        /// Allows to create a new worker object, this object will get a new guid and the corresponding
-        /// group identifier from the <see cref="WorkerGroups"/>
-        /// </summary>
-        /// <typeparam name="T">The type of the worker to create</typeparam>
-        /// <returns>the new worker read toi be instantiated</returns>
-        /// <exception cref="ArgumentException">If the type it not registered in the group registry</exception>
-        public static T CreateNewWorker<T>() where T : IWorker
+        public static T CreateWorker<T>() where T : IWorker
         {
             if (WorkerGroups.ObjectBindings.GetOrNothing(typeof(T), out var group))
             {
@@ -35,12 +28,12 @@ namespace WorksKit
 
         public bool Load(IDictionary<Guid, IWorker> workers)
         {
+            if (!File.Exists(configuration)) return false;
             try
             {
-                using (var stream = new FileStream(Configuration, FileMode.Open, FileAccess.Read))
+                using (var stream = new FileStream(configuration, FileMode.Open, FileAccess.Read))
                 {
                     var reader = new BinaryReader(stream);
-
 
                     var count = reader.ReadInt32();
 
@@ -71,7 +64,8 @@ namespace WorksKit
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.Error("An error occurred while loading preferences for {0}", worker);
+                                    Logger.Error("An error occurred while loading preferences for {0}",
+                                        worker.GetType());
                                     Logger.Debug("Exception: {0}", ex);
                                 }
                             }
@@ -86,9 +80,9 @@ namespace WorksKit
                     }
                 }
             }
-            catch (FileNotFoundException)
+            catch (IOException)
             {
-                Logger.Warn("File {0} not found", Configuration);
+                Logger.Error("An unexpected io exception occurred while loading from file {0}", configuration);
                 return false;
             }
 
@@ -97,13 +91,11 @@ namespace WorksKit
 
         public bool Save(IDictionary<Guid, IWorker> workers)
         {
-            if (!File.Exists(Configuration)) return false;
             try
             {
-                using (var stream = new FileStream(Configuration, FileMode.Create, FileAccess.Write))
+                using (var stream = new FileStream(configuration, FileMode.Create, FileAccess.Write))
                 {
                     var writer = new BinaryWriter(stream);
-
 
                     writer.Write(workers.Count);
 
@@ -144,7 +136,7 @@ namespace WorksKit
             }
             catch (UnauthorizedAccessException)
             {
-                Logger.Warn("Unauthorized access for file {0}", Configuration);
+                Logger.Error("An unauthorized access exception occurred while saving to file {0}", configuration);
                 return false;
             }
 

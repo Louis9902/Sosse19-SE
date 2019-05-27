@@ -9,12 +9,16 @@ namespace WorksKit.Worker.Preferences
     {
         private readonly IPreferenceProvider provider;
 
-        public ListPreference(IPreferenceProvider preferences, string name, IEnumerable<T> value)
+        public ListPreference(IPreferenceProvider preferences, string name, IList<T> value)
         {
             provider = preferences ?? throw new ArgumentNullException(nameof(preferences));
             Name = name;
-            SetDefaults(value);
+            HasDefaultValue = !IsDefaultOrNull(value);
+            if (IsDefaultOrNull(Value)) Value = HasDefaultValue ? new List<T>(value) : new List<T>();
         }
+
+        public bool HasDefaultValue { get; }
+        public bool IsHidden { get; private set; }
 
         public string Name { get; }
 
@@ -23,26 +27,16 @@ namespace WorksKit.Worker.Preferences
             get => provider[Name] as IList<T>;
             set => provider[Name] = value;
         }
-        
-        public bool HasValueSet => provider[Name] is IList<T> list && list.Count > 0;
 
-        private void SetDefaults(IEnumerable<T> values)
+        private static bool IsDefaultOrNull<TV>(TV value)
         {
-            var result = provider[Name];
+            return Equals(default(TV), value);
+        }
 
-            if (result == null)
-            {
-                result = provider[Name] = new List<T>();
-                if (values != null)
-                {
-                    foreach (var value in values) ((IList<T>) result).Add(value);
-                }
-            }
-
-            if (!(result is IList<T>))
-            {
-                throw new InvalidOperationException($"provider has different type for name {Name}");
-            }
+        public ListPreference<T> MakeHidden()
+        {
+            IsHidden = !IsHidden;
+            return this;
         }
 
         public static ListPreference<T> operator +(ListPreference<T> preference, T input)

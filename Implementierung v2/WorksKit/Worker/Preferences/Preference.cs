@@ -6,29 +6,34 @@ namespace WorksKit.Worker.Preferences
     {
         private readonly IPreferenceProvider provider;
 
-        public Preference(IPreferenceProvider preferences, string name, T value, T fallback)
+        public Preference(IPreferenceProvider preferences, string name, T value)
         {
             provider = preferences ?? throw new ArgumentNullException(nameof(preferences));
             Name = name;
-            Fallback = fallback;
-            SetDefault(value);
+            HasDefaultValue = !IsDefaultOrNull(value);
+            if (HasDefaultValue && IsDefaultOrNull(Value)) Value = value;
         }
+
+        public bool HasDefaultValue { get; }
+        public bool IsHidden { get; private set; }
 
         public string Name { get; }
 
         public T Value
         {
-            get => provider[Name] is T result ? result : Fallback;
+            get => provider[Name] is T ? (T) provider[Name] : default;
             set => provider[Name] = value;
         }
-
-        public T Fallback { get; }
-
-        public bool HasValueSet => provider[Name] is T;
-
-        private void SetDefault(T value)
+        
+        private static bool IsDefaultOrNull<TV>(TV value)
         {
-            if (value != null && !value.Equals(default(T))) Value = value;
+            return Equals(default(TV), value);
+        }
+
+        public Preference<T> MakeHidden()
+        {
+            IsHidden = !IsHidden;
+            return this;
         }
 
         public static implicit operator T(Preference<T> property)

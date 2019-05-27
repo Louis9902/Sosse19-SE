@@ -32,16 +32,16 @@ namespace WorksKit.Worker.Preferences
             return preference != null;
         }
 
-        public Preference<T> Preference<T>(string name, T value = default, T fallback = default)
+        public Preference<T> Preference<T>(string name, T value = default)
         {
             if (HasPreferenceCache<T>(name, out var result)) return result;
 
-            result = new Preference<T>(provider, name, value, fallback);
+            result = new Preference<T>(provider, name, value);
             derivations[name] = result;
             return result;
         }
 
-        public ListPreference<T> ListPreference<T>(string name, IEnumerable<T> values = default)
+        public ListPreference<T> ListPreference<T>(string name, IList<T> values = default)
         {
             if (HasPreferenceListCache<T>(name, out var result)) return result;
 
@@ -57,12 +57,11 @@ namespace WorksKit.Worker.Preferences
 
         public void Load(Stream stream)
         {
-            var deserialize = Formatter.Deserialize(stream) as Hashtable;
-            if (deserialize is null) return;
+            if (!(Formatter.Deserialize(stream) is Hashtable deserialize)) return;
 
             foreach (DictionaryEntry next in deserialize)
             {
-                preferences.Add(next.Key, next.Value);
+                preferences[next.Key] = next.Value;
             }
         }
 

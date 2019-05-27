@@ -10,7 +10,7 @@ namespace WorkerService
     {
         public static void Main(string[] args)
         {
-            var workers = new Workers("./Workers.dat");
+            var workers = new Workers("./ExampleWorkers.dat");
 
             var cache = new Dictionary<Guid, IWorker>();
 

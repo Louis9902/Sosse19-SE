@@ -78,7 +78,7 @@ namespace WorksForm
             changes = true;
             if (workers.Count <= e.RowIndex)
             {
-                var newWorker = Workers.CreateNewWorker<SyncWorker>();
+                var newWorker = Workers.CreateWorker<SyncWorker>();
                 newWorker.Source = "";
                 newWorker.Target = "";
                 workers.Add(newWorker.Label, newWorker);
