@@ -1,0 +1,10 @@
+@startuml
+class BackupWorker {
+    - <<readonly>> source : Property<string>
+    - <<readonly>> target : Property<string>
+    + BackupWorker()
+    + Source : string <<get>> <<set>>
+    + Target : string <<get>> <<set>>
+}
+BasicWorker <|-- BackupWorker
+@enduml

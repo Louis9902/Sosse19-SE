@@ -1,0 +1,10 @@
+@startuml
+class "ListPreference`1"<T> {
+    - <<readonly>> provider : IPreferenceProvider
+    + ListPreference(preferences:IPreferenceProvider, name:string, value:IEnumerable<T>)
+    + Name : string <<get>>
+    + Value : IList<T> <<get>> <<set>>
+    + HasValueSet : bool <<get>>
+    - SetDefaults(values:IEnumerable<T>) : void
+}
+@enduml

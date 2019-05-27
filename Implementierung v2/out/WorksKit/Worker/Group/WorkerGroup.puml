@@ -1,0 +1,7 @@
+@startuml
+class WorkerGroup {
+    + <<readonly>> Group : Guid
+    + WorkerGroup(group:string)
+}
+Attribute <|-- WorkerGroup
+@enduml
