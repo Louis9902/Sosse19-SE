@@ -2,7 +2,7 @@
 
 namespace WorksManager
 {
-    partial class WorkerOverview
+    partial class Overview
     {
         /// <summary>
         /// Required designer variable.
@@ -84,8 +84,8 @@ namespace WorksManager
             this.ClientSize = new System.Drawing.Size(878, 519);
             this.Controls.Add(this.Workers);
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.Name = "WorkerOverview";
-            this.Text = "WorkerOverview";
+            this.Name = "Overview";
+            this.Text = "Worker Overview";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnOverviewSave);
             this.Load += new System.EventHandler(this.OnOverviewLoad);
             ((System.ComponentModel.ISupportInitialize) (this.Workers)).EndInit();

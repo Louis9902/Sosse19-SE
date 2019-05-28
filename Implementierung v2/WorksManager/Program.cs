@@ -16,7 +16,7 @@ namespace WorksManager
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new WorkerOverview());
+            Application.Run(new Overview());
         }
     }
 }

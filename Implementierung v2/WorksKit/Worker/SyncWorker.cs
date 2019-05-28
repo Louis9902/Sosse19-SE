@@ -40,10 +40,12 @@ namespace WorksKit.Worker
                 watcher.Path = source;
                 watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
 
-                watcher.Changed += OnChanged;
-                watcher.Created += OnChanged;
-                watcher.Deleted += OnChanged;
-                watcher.Renamed += OnRenamed;
+                watcher.Changed += MakeFilesCopy;
+                watcher.Created += MakeFilesCopy;
+
+                watcher.Deleted += MakeFilesRemove;
+
+                watcher.Renamed += MakeFilesRename;
 
                 watcher.EnableRaisingEvents = true;
 
@@ -51,24 +53,56 @@ namespace WorksKit.Worker
             }
         }
 
-        private void OnRenamed(object sender, RenamedEventArgs e)
+        private string MakeToTarget(string full)
         {
-            var oldTargetPath = e.OldFullPath.Replace(Source, Target);
-            var newTargetPath = e.FullPath.Replace(Source, Target);
-
-
-            if (Directory.Exists(e.FullPath))
-            {
-                Directory.Move(oldTargetPath, newTargetPath);
-            }
-            else
-            {
-                if (File.Exists(newTargetPath)) File.Move(oldTargetPath, newTargetPath);
-                else throw new NotImplementedException();
-            }
+            return full.Replace(Source, Target);
         }
 
-        private void OnChanged(object source, FileSystemEventArgs e)
+        private void MakeFilesRemove(object sender, FileSystemEventArgs args)
+        {
+            var source = args.FullPath;
+            var target = MakeToTarget(source);
+
+            if (Directory.Exists(target))
+            {
+                Directory.Delete(target, true);
+                return;
+            }
+
+            if (File.Exists(target))
+            {
+                File.Delete(target);
+                return;
+            }
+
+            throw new ArgumentException("What the actual shit happened here?");
+        }
+
+        private void MakeFilesRename(object sender, RenamedEventArgs args)
+        {
+            var sourceOld = args.OldFullPath;
+            var sourceNew = args.FullPath;
+            var targetOld = MakeToTarget(sourceOld);
+            var targetNew = MakeToTarget(sourceNew);
+
+            if (Directory.Exists(targetOld))
+            {
+                if (Directory.Exists(targetNew)) return; // What do to here? Merge dirs?
+                Directory.Move(targetOld, targetNew);
+                return;
+            }
+
+            if (File.Exists(targetOld))
+            {
+                if (File.Exists(targetNew)) return; // What do to here? Abort or Delete old?
+                File.Move(targetOld, targetNew);
+                return;
+            }
+
+            throw new ArgumentException("What the actual shit happened here?");
+        }
+
+        private void MakeFilesCopy(object source, FileSystemEventArgs e)
         {
             var targetPath = e.FullPath.Replace(Source, Target);
             switch (e.ChangeType)
@@ -80,6 +114,7 @@ namespace WorksKit.Worker
                     if (File.Exists(targetPath)) File.Copy(e.FullPath, targetPath);
                     break;
                 }
+
                 case WatcherChangeTypes.Deleted:
                 {
                     if (File.Exists(targetPath)) File.Delete(targetPath);

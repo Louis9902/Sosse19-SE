@@ -10,7 +10,7 @@ using WorksManager.Properties;
 
 namespace WorksManager
 {
-    public partial class WorkerOverview : Form
+    public partial class Overview : Form
     {
         private const string Configuration = "Workers.dat";
 
@@ -18,17 +18,17 @@ namespace WorksManager
         private readonly Workers workers = new Workers(Configuration);
         private bool hasMadeChanges;
 
-        public WorkerOverview()
+        public Overview()
         {
+            InitializeLogger();
             InitializeComponent();
             cache = new Dictionary<Guid, IWorker>();
         }
 
         private void OnOverviewLoad(object sender, EventArgs args)
         {
-            SubscribeToLogger();
             workers.Load(cache);
-            FillInWorkers();
+            RefreshWorkersView();
         }
 
         private void OnOverviewSave(object sender, FormClosingEventArgs args)
@@ -47,17 +47,20 @@ namespace WorksManager
                     var result = MessageBox.Show(Resources.SaveMessage, Resources.Warning,
                         MessageBoxButtons.YesNoCancel,
                         MessageBoxIcon.Warning);
-                    
+
                     switch (result)
                     {
                         case DialogResult.Yes:
+                        {
                             workers.Save(cache);
                             break;
-                        case DialogResult.No:
-                            break;
+                        }
+
                         case DialogResult.Cancel:
+                        {
                             args.Cancel = true;
                             break;
+                        }
                     }
 
                     break;
@@ -65,13 +68,13 @@ namespace WorksManager
             }
         }
 
-        private static void SubscribeToLogger()
+        private static void InitializeLogger()
         {
             Logger.Erroring += delegate(string message) { MessageBox.Show(message, Resources.LoggerErrorTitle); };
             Logger.Debugging += delegate(string message) { MessageBox.Show(message, Resources.LoggerErrorTitle); };
         }
 
-        private void FillInWorkers()
+        private void RefreshWorkersView()
         {
             foreach (var worker in cache.Values)
             {
@@ -116,6 +119,24 @@ namespace WorksManager
                 }
 
                 worker = DefaultWorker.Instantiate(clazz, group, label);
+            }
+
+            using (var options = new Form())
+            {
+                options.Dock = DockStyle.Fill;
+                options.Font = new System.Drawing.Font("Courier New", 8.25F);
+                options.Location = new System.Drawing.Point(0, 0);
+                options.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+                options.AutoScaleMode = AutoScaleMode.Font;
+                options.ClientSize = new System.Drawing.Size(380, 500);
+                options.Margin = new Padding(4, 3, 4, 3);
+                options.Controls.Add(new Label
+                {
+                    Text = $"Worker Identifier: {label}",
+                    AutoSize = true,
+                    Margin = new Padding(4, 4, 4, 4)
+                });
+                options.ShowDialog();
             }
 
             var str = new StringBuilder("Preferences:").AppendLine();
