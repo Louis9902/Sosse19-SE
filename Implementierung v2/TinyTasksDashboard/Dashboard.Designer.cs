@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace WorksManager
+﻿namespace TinyTasksDashboard
 {
     partial class Overview
     {
@@ -37,13 +35,16 @@ namespace WorksManager
             this.WorkersGridKind = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize) (this.Workers)).BeginInit();
             this.SuspendLayout();
-            // 
-            // Workers
-            // 
+            this.Workers.AllowUserToResizeColumns = false;
+            this.Workers.AllowUserToResizeRows = false;
             this.Workers.ColumnHeadersHeightSizeMode =
                 System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.Workers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[]
-                {this.WorkersGridGroups, this.WorkersGridLabels, this.WorkersGridKind});
+            {
+                this.WorkersGridGroups,
+                this.WorkersGridLabels,
+                this.WorkersGridKind
+            });
             this.Workers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Workers.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.Workers.Font = new System.Drawing.Font("Courier New", 8.25F);
@@ -52,40 +53,29 @@ namespace WorksManager
             this.Workers.Name = "Workers";
             this.Workers.Size = new System.Drawing.Size(878, 519);
             this.Workers.TabIndex = 0;
-            this.Workers.CellDoubleClick +=
-                new System.Windows.Forms.DataGridViewCellEventHandler(this.OnWorkerCellClick);
-            // 
-            // WorkersGridGroups
-            // 
+            this.Workers.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnWorkerCellClick);
             this.WorkersGridGroups.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.WorkersGridGroups.FillWeight = 132.4873F;
             this.WorkersGridGroups.HeaderText = "Group";
             this.WorkersGridGroups.Name = "WorkersGridGroups";
             this.WorkersGridGroups.Visible = false;
-            // 
-            // WorkersGridLabels
-            // 
             this.WorkersGridLabels.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.WorkersGridLabels.FillWeight = 132.4873F;
             this.WorkersGridLabels.HeaderText = "Label";
             this.WorkersGridLabels.Name = "WorkersGridLabels";
-            // 
-            // WorkersGridKind
-            // 
             this.WorkersGridKind.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.WorkersGridKind.FillWeight = 132.4873F;
             this.WorkersGridKind.HeaderText = "Kind";
             this.WorkersGridKind.Name = "WorkersGridKind";
-            // 
-            // WorkerOverview
-            // 
+            this.Controls.Add(this.Workers);
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(878, 519);
-            this.Controls.Add(this.Workers);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "Overview";
             this.Text = "Worker Overview";
+            this.Font = new System.Drawing.Font("Courier New", 8.25F);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnOverviewSave);
             this.Load += new System.EventHandler(this.OnOverviewLoad);
             ((System.ComponentModel.ISupportInitialize) (this.Workers)).EndInit();

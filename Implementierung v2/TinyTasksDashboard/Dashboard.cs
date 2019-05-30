@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
-using WorksKit;
-using WorksKit.Worker;
-using WorksKit.Worker.Group;
-using WorksKit.Worker.Preferences;
-using WorksManager.Properties;
+using TinyTasksDashboard.Properties;
+using TinyTasksKit;
+using TinyTasksKit.Worker;
+using TinyTasksKit.Worker.Group;
 
-namespace WorksManager
+namespace TinyTasksDashboard
 {
     public partial class Overview : Form
     {
@@ -23,6 +21,12 @@ namespace WorksManager
             InitializeLogger();
             InitializeComponent();
             cache = new Dictionary<Guid, IWorker>();
+        }
+
+        private static void InitializeLogger()
+        {
+            Logger.Erroring += delegate(string message) { MessageBox.Show(message, Resources.LoggerErrorTitle); };
+            Logger.Debugging += delegate(string message) { MessageBox.Show(message, Resources.LoggerErrorTitle); };
         }
 
         private void OnOverviewLoad(object sender, EventArgs args)
@@ -50,28 +54,33 @@ namespace WorksManager
 
                     switch (result)
                     {
+                        case DialogResult.OK:
                         case DialogResult.Yes:
                         {
                             workers.Save(cache);
                             break;
                         }
 
+                        case DialogResult.Abort:
                         case DialogResult.Cancel:
                         {
                             args.Cancel = true;
                             break;
                         }
+
+                        case DialogResult.None:
+                        case DialogResult.Retry:
+                        case DialogResult.Ignore:
+                        case DialogResult.No:
+                            break;
+
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
 
                     break;
                 }
             }
-        }
-
-        private static void InitializeLogger()
-        {
-            Logger.Erroring += delegate(string message) { MessageBox.Show(message, Resources.LoggerErrorTitle); };
-            Logger.Debugging += delegate(string message) { MessageBox.Show(message, Resources.LoggerErrorTitle); };
         }
 
         private void RefreshWorkersView()
@@ -82,33 +91,48 @@ namespace WorksManager
             }
         }
 
-        private void OnWorkerCellClick(object sender, DataGridViewCellEventArgs e)
+        private void OnWorkerCellClick(object sender, DataGridViewCellEventArgs args)
         {
-            var current = Workers.Rows[e.RowIndex];
+            var current = Workers.Rows[args.RowIndex];
 
             var group = current.Cells[0].Value as Guid? ?? default;
             var label = current.Cells[1].Value as Guid? ?? default;
 
             if (group == Guid.Empty || label == Guid.Empty)
             {
-                if (!OpenWorkerChoose(out group, out label)) return;
+                if (!OpenWorkerSelect(out group, out label)) return;
             }
 
-            OpenWorkerOptions(group, label);
+            OpenWorkerProperties(group, label);
         }
 
-        private bool OpenWorkerChoose(out Guid group, out Guid label)
+        /// <summary>
+        /// Allows the user to choose a type of worker, this will search the guid of the group, if this does not exist
+        /// the method will return false and the group guid is set to the default empty value.
+        /// </summary>
+        /// <param name="group">returns the group guid from the chosen worker</param>
+        /// <param name="label">returns the label guid from the choose worker</param>
+        /// <returns>true if a worker type was chosen successfully, otherwise false</returns>
+        private bool OpenWorkerSelect(out Guid group, out Guid label)
         {
+            var clazz = typeof(SyncWorker); //ToDo: make this able to choose
             label = Guid.NewGuid();
 
-            var clazz = typeof(SyncWorker); //ToDo: make this able to choose
             if (!WorkerGroups.ObjectBindings.GetOrNothing(clazz, out group)) return false;
 
             Workers.Rows.Add(group, label, clazz.Name);
             return true;
         }
 
-        private void OpenWorkerOptions(Guid group, Guid label)
+        /// <summary>
+        /// Opens a dialog window which allows the user to set the custom preferences as well as seeing the preferences
+        /// that are already set.
+        /// Note: This will create a new worker with the supplied <paramref name="group"/> and <paramref name="label"/>
+        /// if the cache does not already have a value cached.
+        /// </summary>
+        /// <param name="group">The group guid of the worker</param>
+        /// <param name="label">The label guid of the worker</param>
+        private void OpenWorkerProperties(Guid group, Guid label)
         {
             if (!cache.TryGetValue(label, out var worker))
             {
@@ -121,33 +145,19 @@ namespace WorksManager
                 worker = DefaultWorker.Instantiate(clazz, group, label);
             }
 
-            using (var options = new Form())
+            using (var options = new WorkerOptions(worker))
             {
-                options.Dock = DockStyle.Fill;
-                options.Font = new System.Drawing.Font("Courier New", 8.25F);
-                options.Location = new System.Drawing.Point(0, 0);
-                options.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-                options.AutoScaleMode = AutoScaleMode.Font;
-                options.ClientSize = new System.Drawing.Size(380, 500);
-                options.Margin = new Padding(4, 3, 4, 3);
-                options.Controls.Add(new Label
-                {
-                    Text = $"Worker Identifier: {label}",
-                    AutoSize = true,
-                    Margin = new Padding(4, 4, 4, 4)
-                });
                 options.ShowDialog();
+
+                if (options.RequirementsAreSet)
+                {
+                    cache[label] = worker;
+                }
+                else
+                {
+                    // ToDo: Inform user of missing required preferences
+                }
             }
-
-            var str = new StringBuilder("Preferences:").AppendLine();
-
-            foreach (var preference in worker.Preferences)
-            {
-                if (!(preference is Preference<string> option)) continue;
-                str.Append(option.Name).Append(" :").Append(option.Value).AppendLine();
-            }
-
-            MessageBox.Show($"Group:\n{group}\nLabel:\n{label}\n\n{str}");
         }
     }
 }

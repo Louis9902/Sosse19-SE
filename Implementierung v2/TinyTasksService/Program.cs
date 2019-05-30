@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using WorksKit;
-using WorksKit.Worker;
-using WorksKit.Worker.Group;
+using TinyTasksKit;
+using TinyTasksKit.Worker;
+using TinyTasksKit.Worker.Group;
 
 namespace WorkerService
 {

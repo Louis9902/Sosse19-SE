@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WorkerService")]
+[assembly: AssemblyTitle("TinyTasksKit")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WorkerService")]
+[assembly: AssemblyProduct("TinyTasksKit")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ACB62F28-7C52-460D-A50E-2AC454ACC2B6")]
+[assembly: Guid("4B9B3DF6-A8A9-455D-B62D-FFF8011CEB2A")]
 
 // Version information for an assembly consists of the following four values:
 //

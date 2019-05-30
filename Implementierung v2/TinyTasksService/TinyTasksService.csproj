@@ -7,8 +7,8 @@
     <ProjectGuid>{ACB62F28-7C52-460D-A50E-2AC454ACC2B6}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WorkerService</RootNamespace>
-    <AssemblyName>WorkerService</AssemblyName>
+    <RootNamespace>TinyTasksService</RootNamespace>
+    <AssemblyName>TinyTasksService</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -42,9 +42,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WorksKit\WorksKit.csproj">
+    <ProjectReference Include="..\TinyTasksKit\TinyTasksKit.csproj">
       <Project>{4b9b3df6-a8a9-455d-b62d-fff8011ceb2a}</Project>
-      <Name>WorksKit</Name>
+      <Name>TinyTasksKit</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
