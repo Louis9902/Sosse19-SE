@@ -1,6 +1,6 @@
 using System;
 
-namespace WorksKit.Worker.Group
+namespace TinyTasksKit.Worker.Group
 {
     /// <summary>
     /// 

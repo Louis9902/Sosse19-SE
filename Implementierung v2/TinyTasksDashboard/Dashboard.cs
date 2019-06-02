@@ -8,7 +8,7 @@ using TinyTasksKit.Worker.Group;
 
 namespace TinyTasksDashboard
 {
-    public partial class Overview : Form
+    public partial class Dashboard : Form
     {
         private const string Configuration = "Workers.dat";
 
@@ -16,7 +16,7 @@ namespace TinyTasksDashboard
         private readonly Workers workers = new Workers(Configuration);
         private bool hasMadeChanges;
 
-        public Overview()
+        public Dashboard()
         {
             InitializeLogger();
             InitializeComponent();
@@ -145,7 +145,7 @@ namespace TinyTasksDashboard
                 worker = DefaultWorker.Instantiate(clazz, group, label);
             }
 
-            using (var options = new WorkerOptions(worker))
+            using (var options = new Parameters(worker))
             {
                 options.ShowDialog();
 

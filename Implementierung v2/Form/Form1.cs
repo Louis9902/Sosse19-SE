@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using WorksKit;
-using WorksKit.Worker;
+using TinyTasksKit;
+using TinyTasksKit.Worker;
 
 namespace WorksForm
 {

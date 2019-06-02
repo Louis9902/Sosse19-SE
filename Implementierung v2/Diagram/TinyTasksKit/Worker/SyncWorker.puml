@@ -7,8 +7,10 @@ class SyncWorker {
     + Source : string <<get>> <<set>>
     + Target : string <<get>> <<set>>
     + <<override>> StartWorker() : void
-    - OnRenamed(sender:object, e:RenamedEventArgs) : void
-    - OnChanged(source:object, e:FileSystemEventArgs) : void
+    - MakeToTarget(full:string) : string
+    - MakeFilesRemove(sender:object, args:FileSystemEventArgs) : void
+    - MakeFilesRename(sender:object, args:RenamedEventArgs) : void
+    - MakeFilesCopy(source:object, e:FileSystemEventArgs) : void
     + <<override>> AbortWorker() : void
     + <<override>> ToString() : string
     - {static} DirectoryCopy(sourceDirName:string, destDirName:string, copySubDirs:bool) : void

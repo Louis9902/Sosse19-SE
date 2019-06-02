@@ -3,18 +3,18 @@ using TinyTasksKit.Worker;
 
 namespace TinyTasksDashboard
 {
-    public partial class WorkerOptions : Form
+    public partial class Parameters : Form
     {
         private readonly IWorker worker;
 
-        public WorkerOptions(IWorker worker)
+        public Parameters(IWorker worker)
         {
             this.worker = worker;
             InitializeComponent();
             Initialize();
         }
 
-        public bool RequirementsAreSet { get; private set; }
+        public bool RequirementsAreSet { get; private set; } = true;
 
         private void Initialize()
         {

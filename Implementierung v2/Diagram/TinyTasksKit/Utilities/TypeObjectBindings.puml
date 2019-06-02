@@ -1,5 +1,5 @@
 @startuml
-class "TypeObjectBindings`1"<TBin> {
+class "TypeObjectBindings"<TBin> {
     - <<readonly>> mapBinToObj : Dictionary<TBin, Type>
     - <<readonly>> mapObjToBin : Dictionary<Type, TBin>
     + HasBinBinding(bin:TBin) : bool

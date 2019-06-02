@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Threading;
-using WorksKit.Worker.Preferences;
+using TinyTasksKit.Worker.Preferences;
 
-namespace WorksKit.Worker
+namespace TinyTasksKit.Worker
 {
     public abstract class DefaultWorker : IWorker
     {

@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace WorksKit.Worker.Preferences
+namespace TinyTasksKit.Worker.Preferences
 {
     public class PreferenceSet : IEnumerable
     {

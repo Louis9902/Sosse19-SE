@@ -1,10 +1,9 @@
 using System;
-using System.Data.SqlClient;
 using System.IO;
-using WorksKit.Worker.Group;
-using WorksKit.Worker.Preferences;
+using TinyTasksKit.Worker.Group;
+using TinyTasksKit.Worker.Preferences;
 
-namespace WorksKit.Worker
+namespace TinyTasksKit.Worker
 {
     [WorkerGroup("2258b292-896a-4547-937c-6f0e865d5419")]
     public class SyncWorker : DefaultWorker

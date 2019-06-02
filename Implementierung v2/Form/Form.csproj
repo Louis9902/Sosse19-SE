@@ -89,13 +89,13 @@
       <Project>{99af4a32-210a-4db7-8957-320059ba4f3a}</Project>
       <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WorkerService\WorkerService.csproj">
-      <Project>{acb62f28-7c52-460d-a50e-2ac454acc2b6}</Project>
-      <Name>WorkerService</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WorksKit\WorksKit.csproj">
+    <ProjectReference Include="..\TinyTasksKit\TinyTasksKit.csproj">
       <Project>{4b9b3df6-a8a9-455d-b62d-fff8011ceb2a}</Project>
-      <Name>WorksKit</Name>
+      <Name>TinyTasksKit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TinyTasksService\TinyTasksService.csproj">
+      <Project>{acb62f28-7c52-460d-a50e-2ac454acc2b6}</Project>
+      <Name>TinyTasksService</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

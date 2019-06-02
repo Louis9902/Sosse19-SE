@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorksKit", "WorksKit\WorksKit.csproj", "{4B9B3DF6-A8A9-455D-B62D-FFF8011CEB2A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyTasksKit", "TinyTasksKit\TinyTasksKit.csproj", "{4B9B3DF6-A8A9-455D-B62D-FFF8011CEB2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerService", "WorkerService\WorkerService.csproj", "{ACB62F28-7C52-460D-A50E-2AC454ACC2B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyTasksService", "TinyTasksService\TinyTasksService.csproj", "{ACB62F28-7C52-460D-A50E-2AC454ACC2B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Form", "Form\Form.csproj", "{453DDCC1-0F88-4E60-8704-C3E11D4253BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorksManager", "WorksManager\WorksManager.csproj", "{022D45C8-1F36-4A3C-8EA1-A492853CB152}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyTasksDashboard", "TinyTasksDashboard\TinyTasksDashboard.csproj", "{022D45C8-1F36-4A3C-8EA1-A492853CB152}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

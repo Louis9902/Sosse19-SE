@@ -1,4 +1,4 @@
-namespace WorksKit.Worker.Preferences
+namespace TinyTasksKit.Worker.Preferences
 {
     public interface IPreferenceProvider
     {

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using WorksKit.Utilities;
+using TinyTasksKit.Utilities;
 
-namespace WorksKit.Worker.Group
+namespace TinyTasksKit.Worker.Group
 {
     public class WorkerGroups
     {

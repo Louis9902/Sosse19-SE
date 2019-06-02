@@ -1,6 +1,0 @@
-@startuml
-class Settings <<sealed>> <<partial>> {
-    - {static} defaultInstance : Settings
-    + {static} Default : Settings <<get>>
-}
-@enduml

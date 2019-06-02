@@ -4,7 +4,7 @@ using TinyTasksKit;
 using TinyTasksKit.Worker;
 using TinyTasksKit.Worker.Group;
 
-namespace WorkerService
+namespace TinyTasksService
 {
     public class Program
     {

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace WorksKit.Utilities
+namespace TinyTasksKit.Utilities
 {
     /// <summary>
     /// ActuallyAdditions provides some extensions for quality of live operations

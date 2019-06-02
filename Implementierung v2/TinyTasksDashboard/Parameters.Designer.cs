@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace TinyTasksDashboard
 {
-    partial class WorkerOptions
+    partial class Parameters
     {
         /// <summary>
         /// Required designer variable.
@@ -110,7 +110,7 @@ namespace TinyTasksDashboard
             this.Cancel.Text = "Cancel";
             this.Cancel.UseVisualStyleBackColor = true;
             // 
-            // WorkerOptions
+            // Parameters
             // 
             this.ClientSize = new System.Drawing.Size(650, 445);
             
@@ -122,8 +122,8 @@ namespace TinyTasksDashboard
             
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.Name = "WorkerOptions";
-            this.Text = "WorkerOptions";
+            this.Name = "Parameters";
+            this.Text = "Parameters";
             this.Font = new System.Drawing.Font("Courier New", 8.25F);
             
             ((System.ComponentModel.ISupportInitialize) (this.Options)).EndInit();

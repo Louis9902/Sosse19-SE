@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace WorksKit.Worker.Preferences
+namespace TinyTasksKit.Worker.Preferences
 {
     public class ListPreference<T>
     {

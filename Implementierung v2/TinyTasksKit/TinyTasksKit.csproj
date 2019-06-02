@@ -7,7 +7,7 @@
     <ProjectGuid>{4B9B3DF6-A8A9-455D-B62D-FFF8011CEB2A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WorksKit</RootNamespace>
+    <RootNamespace>TinyTasksKit</RootNamespace>
     <AssemblyName>TinyTasksKit</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -1,10 +1,9 @@
 @startuml
 class Workers {
-    + Workers(configuration:string)
-    + Configuration : string <<get>>
-    + {static} CreateNewWorker() : T
+    - <<readonly>> configuration : string
+    + Workers(path:string)
+    + {static} CreateWorker() : T
     + Load(workers:IDictionary<Guid, IWorker>) : bool
     + Save(workers:IDictionary<Guid, IWorker>) : bool
-    + CreateEmptyFile() : void
 }
 @enduml

@@ -1,5 +1,5 @@
 @startuml
 class Program <<static>> {
-    {static} Main() : void
+    - {static} Main() : void
 }
 @enduml

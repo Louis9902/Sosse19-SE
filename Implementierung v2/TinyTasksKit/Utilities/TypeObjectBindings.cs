@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace WorksKit.Utilities
+namespace TinyTasksKit.Utilities
 {
     /// <summary>
     /// Binds C# Types to a specified value, this is used to have a index of classes to a fixed and persistent.  

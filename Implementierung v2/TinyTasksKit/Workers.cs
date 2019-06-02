@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using WorksKit.Utilities;
-using WorksKit.Worker;
-using WorksKit.Worker.Group;
+using TinyTasksKit.Utilities;
+using TinyTasksKit.Worker;
+using TinyTasksKit.Worker.Group;
 
-namespace WorksKit
+namespace TinyTasksKit
 {
     public class Workers
     {

@@ -1,7 +1,6 @@
 using System;
-using static System.String;
 
-namespace WorksKit
+namespace TinyTasksKit
 {
     public static class Logger
     {
@@ -17,22 +16,22 @@ namespace WorksKit
 
         public static void Info(string message, params object[] objects)
         {
-            Informing?.Invoke(HeaderInfo + Format(message, objects));
+            Informing?.Invoke(HeaderInfo + String.Format(message, objects));
         }
 
         public static void Warn(string message, params object[] objects)
         {
-            Warning?.Invoke(HeaderWarn + Format(message, objects));
+            Warning?.Invoke(HeaderWarn + String.Format(message, objects));
         }
 
         public static void Debug(string message, params object[] objects)
         {
-            Debugging?.Invoke(HeaderDebug + Format(message, objects));
+            Debugging?.Invoke(HeaderDebug + String.Format(message, objects));
         }
 
         public static void Error(string message, params object[] objects)
         {
-            Erroring?.Invoke(HeaderError + Format(message, objects));
+            Erroring?.Invoke(HeaderError + String.Format(message, objects));
         }
     }
 }

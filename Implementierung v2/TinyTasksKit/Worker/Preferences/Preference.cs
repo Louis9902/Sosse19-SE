@@ -1,6 +1,6 @@
 using System;
 
-namespace WorksKit.Worker.Preferences
+namespace TinyTasksKit.Worker.Preferences
 {
     public class Preference<T>
     {

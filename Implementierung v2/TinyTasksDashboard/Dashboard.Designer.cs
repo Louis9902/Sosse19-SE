@@ -1,6 +1,6 @@
 ﻿namespace TinyTasksDashboard
 {
-    partial class Overview
+    partial class Dashboard
     {
         /// <summary>
         /// Required designer variable.
@@ -73,8 +73,8 @@
             this.ClientSize = new System.Drawing.Size(878, 519);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.Name = "Overview";
-            this.Text = "Worker Overview";
+            this.Name = "Dashboard";
+            this.Text = "Worker Dashboard";
             this.Font = new System.Drawing.Font("Courier New", 8.25F);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnOverviewSave);
             this.Load += new System.EventHandler(this.OnOverviewLoad);

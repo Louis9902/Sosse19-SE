@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace WorksKit.Worker.Preferences
+namespace TinyTasksKit.Worker.Preferences
 {
     internal class DictionaryPreferenceProvider : IPreferenceProvider
     {

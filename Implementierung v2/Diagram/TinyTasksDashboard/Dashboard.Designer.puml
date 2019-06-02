@@ -1,0 +1,10 @@
+@startuml
+class Dashboard <<partial>> {
+    # <<override>> Dispose(disposing:bool) : void
+    - InitializeComponent() : void
+    - Workers : System.Windows.Forms.DataGridView
+    - WorkersGridLabels : System.Windows.Forms.DataGridViewTextBoxColumn
+    - WorkersGridGroups : System.Windows.Forms.DataGridViewTextBoxColumn
+    - WorkersGridKind : System.Windows.Forms.DataGridViewTextBoxColumn
+}
+@enduml
