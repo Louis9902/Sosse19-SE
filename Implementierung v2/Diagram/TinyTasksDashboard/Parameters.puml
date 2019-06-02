@@ -1,8 +1,0 @@
-@startuml
-class Parameters <<partial>> {
-    - <<readonly>> worker : IWorker
-    + Preferences(worker:IWorker)
-    + RequirementsAreSet : bool <<get>>
-    - Initialize() : void
-}
-@enduml

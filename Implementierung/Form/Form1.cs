@@ -1,85 +1,148 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
-namespace GUI
+using TinyTasksKit;
+using TinyTasksKit.Worker;
+
+namespace WorksForm
 {
     public partial class Form1 : Form
     {
+        private const string ConfigFilePath = "Workers.dat";
+
+        private readonly Dictionary<Guid, IWorker> workers;
+        private readonly Workers handler = new Workers(ConfigFilePath);
+
+        private bool changes;
+
         public Form1()
         {
+            workers = new Dictionary<Guid, IWorker>();
             InitializeComponent();
         }
 
 
-        static string ConfigFilePath = "config.txt";
-
-
-
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (!File.Exists(ConfigFilePath))
+            if (handler.Load(workers))
             {
-                File.Create(ConfigFilePath).Close();
-            }
-            StreamReader sr;
+                foreach (var worker in workers.Values)
+                {
+                    var preferences = worker.Preferences;
+                    var source = preferences.Preference<string>("source");
+                    var target = preferences.Preference<string>("target");
 
-            try
-            {
-                sr = new StreamReader(ConfigFilePath);
+                    dataGridView.Rows.Add(source.Value, target.Value, worker.Label.ToString());
+                }
             }
-            catch (System.IO.IOException)
+            else
             {
-                MessageBox.Show("The program is currently copying the files. Please retry in a few moments.");
+                MessageBox.Show("Could not load configuration");
                 Application.Exit();
-                return;
-                
             }
-           
-            while (!sr.EndOfStream)
-            {
-                string line = sr.ReadLine();
-                string[] elements = line.Split('|');
-
-                dataGridView.Rows.Add(new object[] { elements[1], elements[2] });
-            }
-            sr.Close();
         }
 
         private void Button_OK_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(ConfigFilePath))
-                File.Create(ConfigFilePath);
-
-            StreamWriter sw = new StreamWriter(ConfigFilePath);
-            for (int i = 0; i < dataGridView.Rows.Count - 1; i++)
+            if (!handler.Save(workers))
             {
-                DataGridViewRow row = dataGridView.Rows[i];
-                sw.Write("1|");
-                sw.Write(row.Cells[0].Value);
-                sw.Write("|");
-                sw.WriteLine(row.Cells[1].Value);
+                MessageBox.Show("Could not save configuration");
             }
 
-            sw.Close();
-            this.Close();
+            Application.Exit();
         }
 
         private void Button_Cancel_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void dataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            DialogResult result = folderBrowserDialog1.ShowDialog();
+            changes = true;
+            if (dataGridView.Rows[e.RowIndex].Cells[0].Value == null &&
+                dataGridView.Rows[e.RowIndex].Cells[1].Value == null)
+            {
+                //If a new line is being edited, we have to add a new empty line
+                dataGridView.Rows.AddCopy(dataGridView.Rows.Count - 1);
+            }
+
+            var result = folderBrowserDialog1.ShowDialog();
             dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = folderBrowserDialog1.SelectedPath;
+        }
+
+        private void dataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            changes = true;
+            if (workers.Count <= e.RowIndex)
+            {
+                var newWorker = Workers.CreateWorker<SyncWorker>();
+                newWorker.Source = "";
+                newWorker.Target = "";
+                workers.Add(newWorker.Label, newWorker);
+                dataGridView.Rows[e.RowIndex].Cells[2].Value = newWorker.Label.ToString();
+            }
+
+            if (!workers.TryGetValue(Guid.Parse((string) dataGridView.Rows[e.RowIndex].Cells[2].Value), out var worker))
+            {
+                return;
+            }
+
+            switch (e.ColumnIndex)
+            {
+                case 0:
+                    worker.Preferences.Preference<string>("source").Value =
+                        (string) dataGridView.Rows[e.RowIndex].Cells[0].Value;
+                    break;
+                case 1:
+                    worker.Preferences.Preference<string>("target").Value =
+                        (string) dataGridView.Rows[e.RowIndex].Cells[1].Value;
+                    break;
+            }
+        }
+
+        private void dataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            if (workers.Count == 0)
+            {
+                //Some systems send some RowsRemoved-events at startup. 
+                //Those are stopped here, because otherwise the app crashes
+                return;
+            }
+
+            changes = true;
+            for (var row = e.RowIndex; row < e.RowIndex + e.RowCount; row++)
+            {
+                workers.Remove(workers.ElementAt(row).Value.Label);
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            switch (e.CloseReason)
+            {
+                case CloseReason.WindowsShutDown:
+                    Button_OK_Click(sender, new EventArgs());
+                    break;
+                case CloseReason.UserClosing when changes:
+                {
+                    var result = MessageBox.Show("Do you want to save changes?", "Warning",
+                        MessageBoxButtons.YesNoCancel);
+                    switch (result)
+                    {
+                        case DialogResult.Yes:
+                            Button_OK_Click(sender, new EventArgs());
+                            break;
+                        case DialogResult.Cancel:
+                            e.Cancel = true;
+                            break;
+                    }
+
+                    break;
+                }
+            }
         }
     }
 }

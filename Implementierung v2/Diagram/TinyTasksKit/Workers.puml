@@ -1,9 +1,0 @@
-@startuml
-class Workers {
-    - <<readonly>> configuration : string
-    + Workers(path:string)
-    + {static} CreateWorker() : T
-    + Load(workers:IDictionary<Guid, IWorker>) : bool
-    + Save(workers:IDictionary<Guid, IWorker>) : bool
-}
-@enduml

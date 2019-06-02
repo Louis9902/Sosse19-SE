@@ -1,9 +1,0 @@
-@startuml
-interface IWorker {
-    Group : Guid <<get>>
-    Label : Guid <<get>>
-    Preferences : PreferenceSet <<get>>
-    StartWorker() : void
-    AbortWorker() : void
-}
-@enduml

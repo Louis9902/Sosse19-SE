@@ -7,7 +7,7 @@
     <ProjectGuid>{453DDCC1-0F88-4E60-8704-C3E11D4253BC}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Backupper.Form</RootNamespace>
+    <RootNamespace>WorksForm</RootNamespace>
     <AssemblyName>Form</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -88,6 +88,14 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{99af4a32-210a-4db7-8957-320059ba4f3a}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TinyTasksKit\TinyTasksKit.csproj">
+      <Project>{4b9b3df6-a8a9-455d-b62d-fff8011ceb2a}</Project>
+      <Name>TinyTasksKit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TinyTasksService\TinyTasksService.csproj">
+      <Project>{acb62f28-7c52-460d-a50e-2ac454acc2b6}</Project>
+      <Name>TinyTasksService</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

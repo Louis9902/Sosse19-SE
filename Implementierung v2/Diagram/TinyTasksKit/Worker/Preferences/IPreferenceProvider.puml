@@ -1,5 +1,0 @@
-@startuml
-interface IPreferenceProvider {
-    + <<indexer>> [name:string] : object <<get>> <<set>>
-}
-@enduml
