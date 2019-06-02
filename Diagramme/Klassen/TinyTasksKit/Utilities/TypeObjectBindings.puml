@@ -1,0 +1,19 @@
+@startuml
+class "TypeObjectBindings"<TBin> {
+    - <<readonly>> mapBinToObj : Dictionary<TBin, Type>
+    - <<readonly>> mapObjToBin : Dictionary<Type, TBin>
+    + HasBinBinding(bin:TBin) : bool
+    + HasObjBinding(type:Type) : bool
+    + Register(bin:TBin, type:Type, mode:InsertMode) : bool
+    + Register(pairs:IEnumerable<KeyValuePair<TBin, Type>>) : void
+    + GetOrNothing(bin:TBin, type:Type) : bool
+    + GetOrCompute(bin:TBin, func:Func<TBin, Type>) : Type
+    + GetOrNothing(type:Type, bin:TBin) : bool
+    + GetOrCompute(type:Type, func:Func<Type, TBin>) : TBin
+}
+enum InsertMode {
+    Insert,
+    DupleReturn,
+    DupleThrows,
+}
+@enduml

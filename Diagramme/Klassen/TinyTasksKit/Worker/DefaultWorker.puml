@@ -1,0 +1,21 @@
+@startuml
+abstract class DefaultWorker {
+    - {static} <<readonly>> Info : ThreadLocal<WorkerInfo>
+    # DefaultWorker()
+    + Group : Guid <<get>>
+    + Label : Guid <<get>>
+    + Preferences : PreferenceSet <<get>>
+    + {static} Instantiate(group:Guid, label:Guid) : T
+    + {static} Instantiate(type:Type, group:Guid, label:Guid) : IWorker
+    + {abstract} StartWorker() : void
+    + {abstract} AbortWorker() : void
+    + LoadPreferences(stream:Stream) : void
+    + SavePreferences(stream:Stream) : void
+}
+class WorkerInfo {
+    + Group : Guid <<get>> <<set>>
+    + Label : Guid <<get>> <<set>>
+}
+IWorker <|-- DefaultWorker
+DefaultWorker +-- WorkerInfo
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+class Dashboard <<partial>> {
+    - <<const>> Configuration : string = "Workers.dat"
+    - <<readonly>> cache : IDictionary<Guid, IWorker>
+    - <<readonly>> workers : Workers
+    - hasMadeChanges : bool
+    + Overview()
+    - {static} InitializeLogger() : void
+    - OnOverviewLoad(sender:object, args:EventArgs) : void
+    - OnOverviewSave(sender:object, args:FormClosingEventArgs) : void
+    - RefreshWorkersView() : void
+    - OnWorkerCellClick(sender:object, args:DataGridViewCellEventArgs) : void
+    - OpenWorkerSelect(group:Guid, label:Guid) : bool
+    - OpenWorkerProperties(group:Guid, label:Guid) : void
+}
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+class "ListPreference"<T> {
+    - <<readonly>> provider : IPreferenceProvider
+    + ListPreference(preferences:IPreferenceProvider, name:string, value:IList<T>)
+    + HasDefaultValue : bool <<get>>
+    + IsHidden : bool <<get>>
+    + Name : string <<get>>
+    + Value : IList<T> <<get>> <<set>>
+    - {static} IsDefaultOrNull(value:TV) : bool
+    + MakeHidden() : ListPreference<T>
+}
+@enduml

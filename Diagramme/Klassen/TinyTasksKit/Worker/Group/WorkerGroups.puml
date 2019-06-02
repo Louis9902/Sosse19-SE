@@ -1,0 +1,11 @@
+@startuml
+class WorkerGroups {
+    - {static} <<readonly>> Groups : Lazy<WorkerGroups>
+    - {static} <<readonly>> WorkerType : Type
+    - <<readonly>> bindings : TypeObjectBindings<Guid>
+    - WorkerGroups()
+    + {static} ObjectBindings : TypeObjectBindings<Guid> <<get>>
+    - SearchGroups() : void
+    - SearchTypes(assembly:Assembly) : void
+}
+@enduml

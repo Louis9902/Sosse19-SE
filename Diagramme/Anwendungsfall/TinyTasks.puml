@@ -1,0 +1,68 @@
+@startuml TinyTasks
+'left to right direction
+
+!define include "<<include>>"
+!define extends "<<extends>>"
+
+actor user as "User" <<Human>>
+actor system as "System" <<Application>>
+
+note right of system : might be the operating system or any other case where no user is explicitly involved
+
+rectangle UserInterface {
+    usecase openUserInterface  as "
+        open user interface
+    "
+    usecase exitUserInterface  as "
+        exit user interface
+    "
+    usecase create as "
+        create worker
+    "
+    usecase delete as "
+        delete worker
+    "
+    usecase change as "
+        change worker preferences
+    "
+    
+    exitUserInterface ..> openUserInterface : extends
+    create ..> openUserInterface : extends
+    delete ..> create : include
+    change ..> create : include
+}
+
+rectangle Service {
+    usecase load as "
+        load workers
+    " 
+    usecase start as "
+        start workers
+    "
+    usecase save as "
+        save workers
+    " 
+    usecase abort as "
+        abort workers
+    "
+
+    start ..> load : extends
+    abort ..> start : extends
+    abort ..> save : include
+}
+
+system --> load
+system --> start
+system --> save
+system --> abort
+
+user --> start
+user --> abort
+
+user --> openUserInterface
+user --> exitUserInterface
+user --> create
+user --> delete
+user --> change
+
+@enduml

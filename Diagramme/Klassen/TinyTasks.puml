@@ -1,0 +1,57 @@
+@startuml TinyTasks
+
+package TinyTasksDashboard {
+    '!include .\\TinyTasksDashboard\Program.puml
+    !include .\\TinyTasksDashboard\Dashboard.puml
+    !include .\\TinyTasksDashboard\Dashboard.Designer.puml
+    !include .\\TinyTasksDashboard\Parameters.puml
+    !include .\\TinyTasksDashboard\Parameters.Designer.puml
+}
+
+package TinyTasksService {
+    '!include .\\TinyTasksService\Program.puml
+}
+
+package TinyTasksKit {
+    !include .\\TinyTasksKit\Workers.puml
+    !include .\\TinyTasksKit\Logger.puml
+    package TinyTasksKit.Utilities {
+        !include .\\TinyTasksKit\Utilities\ActuallyAdditions.puml
+        !include .\\TinyTasksKit\Utilities\TypeObjectBindings.puml
+    }
+    package TinyTasksKit.Worker {
+        !include .\\TinyTasksKit\Worker\DefaultWorker.puml
+        !include .\\TinyTasksKit\Worker\IWorker.puml
+        !include .\\TinyTasksKit\Worker\SyncWorker.puml
+        package TinyTasksKit.Worker.Group {
+            !include .\\TinyTasksKit\Worker\Group\WorkerGroup.puml
+            !include .\\TinyTasksKit\Worker\Group\WorkerGroups.puml
+        }
+        package TinyTasksKit.Worker.Preferences {
+            !include .\\TinyTasksKit\Worker\Preferences\DictionaryPreferenceProvider.puml
+            !include .\\TinyTasksKit\Worker\Preferences\IPreferenceProvider.puml
+            !include .\\TinyTasksKit\Worker\Preferences\ListPreference.puml
+            !include .\\TinyTasksKit\Worker\Preferences\Preference.puml
+            !include .\\TinyTasksKit\Worker\Preferences\PreferenceSet.puml
+        }
+    }
+}
+
+Workers --0)-- Dashboard : configuration file
+Workers --(0-- WorkerGroups : uses group index of
+
+WorkerGroups "1" --> "1" TypeObjectBindings : has
+WorkerGroups -- WorkerGroup : uses for detection and registering
+
+DefaultWorker "1" o--> "1" PreferenceSet : manages
+
+PreferenceSet "1" o--> "0..*" Preference : consists out of
+PreferenceSet "1" o--> "0..*" ListPreference : consists out of
+PreferenceSet "1" o--> "1" IPreferenceProvider : uses
+
+Workers "1" --> "0..*" IWorker : loads and stores
+
+TypeObjectBindings -- InsertMode : uses
+
+Dashboard -- Parameters : more informations displayed in
+@enduml
