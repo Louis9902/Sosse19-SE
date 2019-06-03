@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security;
 using TinyTasksKit.Worker.Group;
 using TinyTasksKit.Worker.Preferences;
 
@@ -11,16 +8,16 @@ namespace TinyTasksKit.Worker
     [WorkerGroup("2258b292-896a-4547-937c-6f0e865d5419")]
     public class SyncWorker : DefaultWorker
     {
-        private readonly Preference<string> source;
-        private readonly Preference<string> target;
+        private readonly ScalarPreference<string> source;
+        private readonly ScalarPreference<string> target;
 
         private readonly ListPreference<string> caches;
 
         public SyncWorker()
         {
-            source = Preferences.Preference<string>("source");
-            target = Preferences.Preference<string>("target");
-            caches = Preferences.ListPreference<string>("caches").ToggleHidden();
+            source = Preferences.Preference<string>("source").UpdateDataType(PreferenceDataType.Path);
+            target = Preferences.Preference<string>("target").UpdateDataType(PreferenceDataType.Path);
+            caches = Preferences.ListPreference<string>("caches").ToggleVisibility();
         }
 
         public string Source

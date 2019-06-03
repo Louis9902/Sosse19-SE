@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using static TinyTasksKit.Worker.Preferences.PreferenceDataType;
 
 namespace TinyTasksKit.Worker.Preferences
 {
-    public class PreferenceSet : IEnumerable
+    public class PreferenceSet
     {
         private static readonly IFormatter Formatter = new BinaryFormatter();
 
@@ -20,9 +22,14 @@ namespace TinyTasksKit.Worker.Preferences
             provider = new DictionaryPreferenceProvider(preferences);
         }
 
-        private bool HasPreferenceCache<T>(string name, out Preference<T> preference)
+        public static bool IsNullOrTypeDefault<T>(T value)
         {
-            preference = derivations[name] as Preference<T>;
+            return Equals(default(T), value);
+        }
+
+        private bool HasPreferenceCache<T>(string name, out ScalarPreference<T> preference)
+        {
+            preference = derivations[name] as ScalarPreference<T>;
             return preference != null;
         }
 
@@ -32,16 +39,13 @@ namespace TinyTasksKit.Worker.Preferences
             return preference != null;
         }
 
-        public IPreference this[string name]
-        {
-            get => derivations[name] as IPreference;
-        }
+        public IPreference this[string name] => derivations[name] as IPreference;
 
-        public Preference<T> Preference<T>(string name, T value = default)
+        public ScalarPreference<T> Preference<T>(string name, T value = default)
         {
             if (HasPreferenceCache<T>(name, out var result)) return result;
 
-            result = new Preference<T>(provider, name, value);
+            result = new ScalarPreference<T>(provider, name, value);
             derivations[name] = result;
             return result;
         }
@@ -55,9 +59,14 @@ namespace TinyTasksKit.Worker.Preferences
             return result;
         }
 
-        public IEnumerator GetEnumerator()
+        public IEnumerable<IPreference> GetAll()
         {
-            return derivations.Values.GetEnumerator();
+            return derivations.Values.Cast<IPreference>();
+        }
+
+        public IEnumerable<IPreference> GetVisible()
+        {
+            return GetAll().Where(preference => preference.Visible);
         }
 
         public void Load(Stream stream)

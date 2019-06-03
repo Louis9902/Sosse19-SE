@@ -1,17 +1,25 @@
+using System;
+
 namespace TinyTasksKit.Worker.Preferences
 {
     public interface IPreference
     {
+        PreferenceDataType DataType { get; }
+        
+        bool Visible { get; }
+
         bool HasDefaultValue { get; }
-        
-        bool IsHidden { get; }
-        
-        bool IsSatisfied { get; }
-        
+
+        bool HasValueSet { get; }
+
+        bool Complete { get; }
+
         string Name { get; }
 
-        string ToDisplayString();
+        Type ValueType { get; }
+        
+        string ToView();
 
-        void FromDisplayString(string line);
+        void FromView(string line);
     }
 }

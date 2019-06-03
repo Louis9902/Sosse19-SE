@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using static TinyTasksKit.Worker.Preferences.PreferenceSet;
 
 namespace TinyTasksKit.Worker.Preferences
 {
@@ -11,44 +12,51 @@ namespace TinyTasksKit.Worker.Preferences
         {
             provider = preferences ?? throw new ArgumentNullException(nameof(preferences));
             Name = name;
-            HasDefaultValue = !IsDefaultOrNull(value);
-            if (IsDefaultOrNull(Value)) Value = HasDefaultValue ? new List<T>(value) : new List<T>();
+            HasDefaultValue = !IsNullOrTypeDefault(value);
+            if (HasDefaultValue && IsNullOrTypeDefault(Value))
+                Value = HasDefaultValue ? new List<T>(value) : new List<T>();
         }
 
+        public PreferenceDataType DataType { get; private set; } = PreferenceDataType.Collection;
+
+        public bool Visible { get; private set; } = true;
+
         public bool HasDefaultValue { get; }
-        public bool IsHidden { get; private set; }
+
+        public bool HasValueSet => HasDefaultValue || !IsNullOrTypeDefault(Value);
+
+        public bool Complete => Visible && HasValueSet;
 
         public string Name { get; }
 
         public IList<T> Value
         {
-            get => provider[Name] as IList<T>;
+            get => provider[Name] is IList<T> result ? result : default;
             set => provider[Name] = value;
         }
 
-        public bool IsSatisfied => HasDefaultValue || !IsDefaultOrNull(Value);
+        public Type ValueType => typeof(List<T>);
 
-        private static bool IsDefaultOrNull<TV>(TV value)
+        public string ToView()
         {
-            return Equals(default(TV), value);
+            throw new NotImplementedException();
         }
 
-        public ListPreference<T> ToggleHidden()
+        public void FromView(string line)
         {
-            IsHidden = !IsHidden;
+            throw new NotImplementedException();
+        }
+
+        public ListPreference<T> ToggleVisibility()
+        {
+            Visible = !Visible;
             return this;
         }
 
-        public string ToDisplayString()
+        public ListPreference<T> UpdateDataType(PreferenceDataType dataType)
         {
-            // ToDo: implement list display (write)
-            return null;
-        }
-
-        public void FromDisplayString(string line)
-        {
-            // ToDo: implement list display (read)
-            return;
+            DataType = dataType;
+            return this;
         }
 
         public static ListPreference<T> operator +(ListPreference<T> preference, T input)

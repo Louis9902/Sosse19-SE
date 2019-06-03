@@ -1,5 +1,7 @@
+using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace TinyTasksDashboard
 {
@@ -36,6 +38,7 @@ namespace TinyTasksDashboard
             this.Label = new System.Windows.Forms.Label();
             
             this.Options = new System.Windows.Forms.DataGridView();
+            this.OptionsGridStore = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.OptionsGridLabel = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.OptionsGridValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             
@@ -72,20 +75,33 @@ namespace TinyTasksDashboard
             this.Options.Size = new System.Drawing.Size(620, 320);
             this.Options.TabIndex = 2;
 
-            this.Options.EditMode = DataGridViewEditMode.EditOnEnter;
+            this.Options.ShowEditingIcon = false;
+            this.Options.RowHeadersVisible = false;
+            this.Options.EditMode = DataGridViewEditMode.EditOnKeystroke;
             this.Options.AllowUserToResizeColumns = false;
             this.Options.AllowUserToResizeRows = false;
+            this.Options.AllowUserToAddRows = false;
             this.Options.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.Options.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[]
             {
+                this.OptionsGridStore,
                 this.OptionsGridLabel,
                 this.OptionsGridValue
             });
+            this.Options.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellClick);
+            this.Options.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellClick);
 
+            this.OptionsGridStore.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            this.OptionsGridStore.FillWeight = 132.4873F;
+            this.OptionsGridStore.HeaderText = "Store";
+            this.OptionsGridStore.Name = "OptionsGridStore";
+            this.OptionsGridStore.Visible = false;
+            
             this.OptionsGridLabel.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             this.OptionsGridLabel.FillWeight = 132.4873F;
             this.OptionsGridLabel.HeaderText = "Label";
             this.OptionsGridLabel.Name = "OptionsGridLabel";
+            this.OptionsGridLabel.ReadOnly = true;
             
             this.OptionsGridValue.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             this.OptionsGridValue.FillWeight = 132.4873F;
@@ -100,7 +116,7 @@ namespace TinyTasksDashboard
             this.Okay.TabIndex = 3;
             this.Okay.Text = "Okay";
             this.Okay.UseVisualStyleBackColor = true;
-            this.Okay.Click += OnOkayClick;
+            this.Okay.Click += new EventHandler(OnButtonOkay);
             // 
             // Cancel
             // 
@@ -110,6 +126,7 @@ namespace TinyTasksDashboard
             this.Cancel.TabIndex = 4;
             this.Cancel.Text = "Cancel";
             this.Cancel.UseVisualStyleBackColor = true;
+            this.Cancel.Click += new EventHandler(OnButtonCancel);
             // 
             // Parameters
             // 
@@ -127,6 +144,8 @@ namespace TinyTasksDashboard
             this.Text = "Parameters";
             this.Font = new System.Drawing.Font("Courier New", 8.25F);
             
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnWindowClose);
+
             ((System.ComponentModel.ISupportInitialize) (this.Options)).EndInit();
             this.ResumeLayout(false);
         }
@@ -136,6 +155,7 @@ namespace TinyTasksDashboard
         private System.Windows.Forms.Label Group;
         private System.Windows.Forms.Label Label;
         private System.Windows.Forms.DataGridView Options;
+        private System.Windows.Forms.DataGridViewTextBoxColumn OptionsGridStore;
         private System.Windows.Forms.DataGridViewTextBoxColumn OptionsGridLabel;
         private System.Windows.Forms.DataGridViewTextBoxColumn OptionsGridValue;
         private System.Windows.Forms.Button Okay;

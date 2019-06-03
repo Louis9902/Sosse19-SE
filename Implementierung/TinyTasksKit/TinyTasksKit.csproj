@@ -46,10 +46,10 @@
     <Compile Include="Workers.cs" />
     <Compile Include="Worker\Preferences\DictionaryPreferenceProvider.cs" />
     <Compile Include="Worker\Preferences\IPreference.cs" />
-    <Compile Include="Worker\Preferences\IPreferencePrinter.cs" />
     <Compile Include="Worker\Preferences\IPreferenceProvider.cs" />
     <Compile Include="Worker\Preferences\ListPreference.cs" />
-    <Compile Include="Worker\Preferences\Preference.cs" />
+    <Compile Include="Worker\Preferences\ScalarPreference.cs" />
+    <Compile Include="Worker\Preferences\PreferenceDataType.cs" />
     <Compile Include="Worker\Preferences\PreferenceSet.cs" />
     <Compile Include="Worker\SyncWorker.cs" />
     <Compile Include="Worker\DefaultWorker.cs" />

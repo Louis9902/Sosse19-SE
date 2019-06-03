@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Media;
 using System.Windows.Forms;
 using TinyTasksDashboard.Properties;
 using TinyTasksKit;
@@ -14,7 +15,6 @@ namespace TinyTasksDashboard
 
         private readonly IDictionary<Guid, IWorker> cache;
         private readonly Workers workers = new Workers(Configuration);
-        private bool hasMadeChanges;
 
         public Dashboard()
         {
@@ -29,20 +29,30 @@ namespace TinyTasksDashboard
             Logger.Debugging += delegate(string message) { MessageBox.Show(message, Resources.LoggerErrorTitle); };
         }
 
-        private void OnOverviewLoad(object sender, EventArgs args)
+        private void LoadWorkersCache()
         {
             workers.Load(cache);
+        }
+
+        private void SaveWorkersCache()
+        {
+            workers.Save(cache);
+        }
+
+        private void OnOverviewLoad(object sender, EventArgs args)
+        {
+            LoadWorkersCache();
             RefreshWorkersView();
         }
 
-        private void OnOverviewSave(object sender, FormClosingEventArgs args)
+        private void OnWindowClose(object sender, FormClosingEventArgs args)
         {
-            //if (!hasMadeChanges) return;
             switch (args.CloseReason)
             {
                 case CloseReason.TaskManagerClosing:
                 case CloseReason.WindowsShutDown:
                 {
+                    SaveWorkersCache();
                     break;
                 }
 
@@ -54,28 +64,17 @@ namespace TinyTasksDashboard
 
                     switch (result)
                     {
-                        case DialogResult.OK:
                         case DialogResult.Yes:
                         {
-                            workers.Save(cache);
+                            SaveWorkersCache();
                             break;
                         }
 
-                        case DialogResult.Abort:
                         case DialogResult.Cancel:
                         {
                             args.Cancel = true;
                             break;
                         }
-
-                        case DialogResult.None:
-                        case DialogResult.Retry:
-                        case DialogResult.Ignore:
-                        case DialogResult.No:
-                            break;
-
-                        default:
-                            throw new ArgumentOutOfRangeException();
                     }
 
                     break;
@@ -91,19 +90,24 @@ namespace TinyTasksDashboard
             }
         }
 
-        private void OnWorkerCellClick(object sender, DataGridViewCellEventArgs args)
+        private void OnCellClick(object sender, DataGridViewCellEventArgs args)
         {
+            if (args.RowIndex < 0) return;
             var current = Workers.Rows[args.RowIndex];
 
             var group = current.Cells[0].Value as Guid? ?? default;
             var label = current.Cells[1].Value as Guid? ?? default;
+            var index = 0;
 
             if (group == Guid.Empty || label == Guid.Empty)
             {
-                if (!OpenWorkerSelect(out group, out label)) return;
+                if (!OpenWorkerSelect(out group, out label, ref index)) return;
             }
 
-            OpenWorkerProperties(group, label);
+            if (!OpenWorkerProperties(group, label))
+            {
+                Workers.Rows.RemoveAt(index);
+            }
         }
 
         /// <summary>
@@ -113,7 +117,7 @@ namespace TinyTasksDashboard
         /// <param name="group">returns the group guid from the chosen worker</param>
         /// <param name="label">returns the label guid from the choose worker</param>
         /// <returns>true if a worker type was chosen successfully, otherwise false</returns>
-        private bool OpenWorkerSelect(out Guid group, out Guid label)
+        private bool OpenWorkerSelect(out Guid group, out Guid label, ref int index)
         {
             var clazz = typeof(SyncWorker); //ToDo: make this able to choose
             label = Guid.NewGuid();
@@ -121,6 +125,7 @@ namespace TinyTasksDashboard
             if (!WorkerGroups.ObjectBindings.GetOrNothing(clazz, out group)) return false;
 
             Workers.Rows.Add(group, label, clazz.Name);
+            index = Workers.RowCount - 2;
             return true;
         }
 
@@ -132,14 +137,14 @@ namespace TinyTasksDashboard
         /// </summary>
         /// <param name="group">The group guid of the worker</param>
         /// <param name="label">The label guid of the worker</param>
-        private void OpenWorkerProperties(Guid group, Guid label)
+        private bool OpenWorkerProperties(Guid group, Guid label)
         {
             if (!cache.TryGetValue(label, out var worker))
             {
                 if (!WorkerGroups.ObjectBindings.GetOrNothing(group, out var clazz))
                 {
                     Logger.Warn("Unable to get type for group id {0}, skipping creation process", group);
-                    return;
+                    return false;
                 }
 
                 worker = DefaultWorker.Instantiate(clazz, group, label);
@@ -149,14 +154,17 @@ namespace TinyTasksDashboard
             {
                 options.ShowDialog();
 
-                if (options.RequirementsAreSet)
+                while (!options.HasAllValues && !options.Abort)
                 {
-                    cache[label] = worker;
+                    options.Reset();
+                    SystemSounds.Exclamation.Play();
+                    options.ShowDialog();
                 }
-                else
-                {
-                    MessageBox.Show("Missing Required Parameters!");
-                }
+
+                if (!options.HasAllValues) return false;
+
+                cache[label] = worker;
+                return true;
             }
         }
     }
