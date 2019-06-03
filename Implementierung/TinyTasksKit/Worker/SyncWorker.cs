@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Security;
 using TinyTasksKit.Worker.Group;
 using TinyTasksKit.Worker.Preferences;
 
@@ -17,7 +20,7 @@ namespace TinyTasksKit.Worker
         {
             source = Preferences.Preference<string>("source");
             target = Preferences.Preference<string>("target");
-            caches = Preferences.ListPreference<string>("caches").MakeHidden();
+            caches = Preferences.ListPreference<string>("caches").ToggleHidden();
         }
 
         public string Source
@@ -39,12 +42,10 @@ namespace TinyTasksKit.Worker
                 watcher.Path = source;
                 watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
 
-                watcher.Changed += MakeFilesCopy;
-                watcher.Created += MakeFilesCopy;
-
-                watcher.Deleted += MakeFilesRemove;
-
-                watcher.Renamed += MakeFilesRename;
+                watcher.Changed += OnCommonFileEvent;
+                watcher.Created += OnCommonFileEvent;
+                watcher.Deleted += OnCommonFileEvent;
+                watcher.Renamed += OnCommonFileEvent;
 
                 watcher.EnableRaisingEvents = true;
 
@@ -52,73 +53,108 @@ namespace TinyTasksKit.Worker
             }
         }
 
-        private string MakeToTarget(string full)
+        private static string ResolveToRoot(string root, string current)
         {
-            return full.Replace(Source, Target);
+            return current.Substring(root.Length + 1);
         }
 
-        private void MakeFilesRemove(object sender, FileSystemEventArgs args)
+        private string ResolveSourceToTarget(string path)
         {
-            var source = args.FullPath;
-            var target = MakeToTarget(source);
-
-            if (Directory.Exists(target))
-            {
-                Directory.Delete(target, true);
-                return;
-            }
-
-            if (File.Exists(target))
-            {
-                File.Delete(target);
-                return;
-            }
-
-            throw new ArgumentException("What the actual shit happened here?");
+            return Path.Combine(Target, ResolveToRoot(Source, path));
         }
 
-        private void MakeFilesRename(object sender, RenamedEventArgs args)
+        private string ResolveTargetToSource(string path)
         {
-            var sourceOld = args.OldFullPath;
-            var sourceNew = args.FullPath;
-            var targetOld = MakeToTarget(sourceOld);
-            var targetNew = MakeToTarget(sourceNew);
-
-            if (Directory.Exists(targetOld))
-            {
-                if (Directory.Exists(targetNew)) return; // What do to here? Merge dirs?
-                Directory.Move(targetOld, targetNew);
-                return;
-            }
-
-            if (File.Exists(targetOld))
-            {
-                if (File.Exists(targetNew)) return; // What do to here? Abort or Delete old?
-                File.Move(targetOld, targetNew);
-                return;
-            }
-
-            throw new ArgumentException("What the actual shit happened here?");
+            return Path.Combine(Source, ResolveToRoot(Target, path));
         }
 
-        private void MakeFilesCopy(object source, FileSystemEventArgs e)
+        private void OnRenameFileEvent(object sender, RenamedEventArgs args)
         {
-            var targetPath = e.FullPath.Replace(Source, Target);
-            switch (e.ChangeType)
+            var srcOld = args.OldFullPath;
+            var srcNew = args.FullPath;
+            var tgtOld = ResolveSourceToTarget(srcOld);
+            var tgtNew = ResolveSourceToTarget(srcNew);
+
+            if (File.Exists(srcNew))
             {
-                case WatcherChangeTypes.Changed:
+                if (File.Exists(tgtOld))
+                {
+                    if (File.Exists(tgtNew)) return; // no merge of files
+                    File.Move(tgtOld, tgtNew);
+                }
+                else
+                {
+                    File.Copy(srcNew, tgtNew);
+                }
+
+                return;
+            }
+
+            if (Directory.Exists(srcNew))
+            {
+                MoveOrMergeDirectory(srcNew, tgtNew);
+            }
+        }
+
+        private void OnCommonFileEvent(object sender, FileSystemEventArgs args)
+        {
+            var src = args.FullPath;
+            var tgt = ResolveSourceToTarget(src);
+
+            switch (args.ChangeType)
+            {
+                case WatcherChangeTypes.All:
+                {
+                    Logger.Trace("File System Event All: {0}", args);
+                    break;
+                }
+
                 case WatcherChangeTypes.Created:
                 {
-                    if (!File.Exists(e.FullPath)) return;
-                    if (File.Exists(targetPath)) File.Copy(e.FullPath, targetPath);
+                    if (File.Exists(src))
+                    {
+                        if (!File.Exists(tgt)) File.Copy(src, tgt);
+                        // src is file and tgt already exists, maybe override?
+                        break;
+                    }
+
+                    if (!Directory.Exists(tgt)) Directory.CreateDirectory(tgt);
+                    break;
+                }
+
+                case WatcherChangeTypes.Changed:
+                {
+                    if (File.Exists(src))
+                    {
+                        if (File.Exists(tgt)) File.Delete(tgt);
+                        File.Copy(src, tgt);
+                        break;
+                    }
+
+                    // src is folder what should we do when folder triggers change?
                     break;
                 }
 
                 case WatcherChangeTypes.Deleted:
                 {
-                    if (File.Exists(targetPath)) File.Delete(targetPath);
+                    if (File.Exists(tgt))
+                    {
+                        File.Delete(tgt);
+                        break;
+                    }
+
+                    if (!Directory.Exists(tgt)) Directory.Delete(tgt, true);
                     break;
                 }
+
+                case WatcherChangeTypes.Renamed:
+                {
+                    OnRenameFileEvent(source, (RenamedEventArgs) args);
+                    break;
+                }
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -131,38 +167,25 @@ namespace TinyTasksKit.Worker
             return $"SyncWorker {Source}, {Target}, {caches.Value.Count}";
         }
 
-        private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+        private static void MoveOrMergeDirectory(string sourceDir, string targetDir)
         {
-            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+            if (!Directory.Exists(sourceDir)) return;
+            if (!Directory.Exists(targetDir)) Directory.CreateDirectory(targetDir);
 
-            if (!dir.Exists)
+            foreach (var current in Directory.EnumerateDirectories(sourceDir))
             {
-                throw new DirectoryNotFoundException(
-                    "Source directory does not exist or could not be found: "
-                    + sourceDirName);
+                var name = ResolveToRoot(sourceDir, current);
+                var next = Path.Combine(targetDir, name);
+                MoveOrMergeDirectory(current, next);
             }
 
-            DirectoryInfo[] dirs = dir.GetDirectories();
-
-            if (!Directory.Exists(destDirName))
+            foreach (var current in Directory.EnumerateFiles(sourceDir))
             {
-                Directory.CreateDirectory(destDirName);
-            }
+                var name = ResolveToRoot(sourceDir, current);
+                var next = Path.Combine(targetDir, name);
 
-            FileInfo[] files = dir.GetFiles();
-            foreach (FileInfo file in files)
-            {
-                string temppath = Path.Combine(destDirName, file.Name);
-                file.CopyTo(temppath, false);
-            }
-
-            if (copySubDirs)
-            {
-                foreach (DirectoryInfo subdir in dirs)
-                {
-                    string temppath = Path.Combine(destDirName, subdir.Name);
-                    DirectoryCopy(subdir.FullName, temppath, copySubDirs);
-                }
+                if (File.Exists(next)) File.Delete(next);
+                File.Move(current, next);
             }
         }
     }

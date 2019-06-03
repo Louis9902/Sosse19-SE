@@ -45,6 +45,8 @@
     <Compile Include="Utilities\TypeObjectBindings.cs" />
     <Compile Include="Workers.cs" />
     <Compile Include="Worker\Preferences\DictionaryPreferenceProvider.cs" />
+    <Compile Include="Worker\Preferences\IPreference.cs" />
+    <Compile Include="Worker\Preferences\IPreferencePrinter.cs" />
     <Compile Include="Worker\Preferences\IPreferenceProvider.cs" />
     <Compile Include="Worker\Preferences\ListPreference.cs" />
     <Compile Include="Worker\Preferences\Preference.cs" />

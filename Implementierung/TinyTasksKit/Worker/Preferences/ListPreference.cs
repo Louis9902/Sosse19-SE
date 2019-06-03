@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TinyTasksKit.Worker.Preferences
 {
-    public class ListPreference<T>
+    public class ListPreference<T> : IPreference
     {
         private readonly IPreferenceProvider provider;
 
@@ -26,15 +26,29 @@ namespace TinyTasksKit.Worker.Preferences
             set => provider[Name] = value;
         }
 
+        public bool IsSatisfied => HasDefaultValue || !IsDefaultOrNull(Value);
+
         private static bool IsDefaultOrNull<TV>(TV value)
         {
             return Equals(default(TV), value);
         }
 
-        public ListPreference<T> MakeHidden()
+        public ListPreference<T> ToggleHidden()
         {
             IsHidden = !IsHidden;
             return this;
+        }
+
+        public string ToDisplayString()
+        {
+            // ToDo: implement list display (write)
+            return null;
+        }
+
+        public void FromDisplayString(string line)
+        {
+            // ToDo: implement list display (read)
+            return;
         }
 
         public static ListPreference<T> operator +(ListPreference<T> preference, T input)

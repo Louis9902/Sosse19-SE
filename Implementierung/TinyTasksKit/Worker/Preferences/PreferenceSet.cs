@@ -32,6 +32,11 @@ namespace TinyTasksKit.Worker.Preferences
             return preference != null;
         }
 
+        public IPreference this[string name]
+        {
+            get => derivations[name] as IPreference;
+        }
+
         public Preference<T> Preference<T>(string name, T value = default)
         {
             if (HasPreferenceCache<T>(name, out var result)) return result;

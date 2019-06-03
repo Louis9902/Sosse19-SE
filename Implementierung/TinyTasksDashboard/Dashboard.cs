@@ -155,7 +155,7 @@ namespace TinyTasksDashboard
                 }
                 else
                 {
-                    // ToDo: Inform user of missing required preferences
+                    MessageBox.Show("Missing Required Parameters!");
                 }
             }
         }

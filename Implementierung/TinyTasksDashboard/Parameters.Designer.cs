@@ -100,6 +100,7 @@ namespace TinyTasksDashboard
             this.Okay.TabIndex = 3;
             this.Okay.Text = "Okay";
             this.Okay.UseVisualStyleBackColor = true;
+            this.Okay.Click += OnOkayClick;
             // 
             // Cancel
             // 

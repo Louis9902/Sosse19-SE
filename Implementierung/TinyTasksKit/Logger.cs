@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 namespace TinyTasksKit
 {
@@ -8,11 +9,13 @@ namespace TinyTasksKit
         private const string HeaderWarn = "[Warn]: ";
         private const string HeaderDebug = "[Debug]: ";
         private const string HeaderError = "[Error]: ";
+        private const string HeaderTrace = "[Trace]: ";
 
         public static event Action<string> Informing;
         public static event Action<string> Warning;
         public static event Action<string> Debugging;
         public static event Action<string> Erroring;
+        public static event Action<string> Tracing;
 
         public static void Info(string message, params object[] objects)
         {
@@ -32,6 +35,11 @@ namespace TinyTasksKit
         public static void Error(string message, params object[] objects)
         {
             Erroring?.Invoke(HeaderError + String.Format(message, objects));
+        }
+
+        public static void Trace(string message, params object[] objects)
+        {
+            Tracing?.Invoke(HeaderTrace + String.Format(message, objects));
         }
     }
 }
