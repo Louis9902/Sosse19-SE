@@ -13,6 +13,8 @@ namespace TinyTasksKit.Worker
 
         private readonly ListPreference<string> caches;
 
+        private FileSystemWatcher watcher;
+
         public SyncWorker()
         {
             source = Preferences.Preference<string>("source").UpdateDataType(PreferenceDataType.Path);
@@ -30,25 +32,6 @@ namespace TinyTasksKit.Worker
         {
             get => target.Value;
             set => target.Value = value;
-        }
-
-        public override void StartWorker()
-        {
-            using (var watcher = new FileSystemWatcher())
-            {
-                watcher.Path = source;
-                watcher.IncludeSubdirectories = true;
-                watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-
-                watcher.Changed += OnCommonFileEvent;
-                watcher.Created += OnCommonFileEvent;
-                watcher.Deleted += OnCommonFileEvent;
-                watcher.Renamed += OnCommonFileEvent;
-
-                watcher.EnableRaisingEvents = true;
-
-                while (Console.Read() != 'q') ;
-            }
         }
 
         private static string ResolveToRoot(string root, string current)
@@ -91,6 +74,7 @@ namespace TinyTasksKit.Worker
             if (Directory.Exists(srcNew))
             {
                 MoveOrMergeDirectory(srcNew, tgtNew);
+                Directory.Delete(tgtOld, true);
             }
         }
 
@@ -141,7 +125,7 @@ namespace TinyTasksKit.Worker
                         break;
                     }
 
-                    if (!Directory.Exists(tgt)) Directory.Delete(tgt, true);
+                    if (Directory.Exists(tgt)) Directory.Delete(tgt, true);
                     break;
                 }
 
@@ -156,8 +140,26 @@ namespace TinyTasksKit.Worker
             }
         }
 
+        public override void StartWorker()
+        {
+            watcher = new FileSystemWatcher
+            {
+                Path = source,
+                IncludeSubdirectories = true,
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
+            };
+            
+            watcher.Changed += OnCommonFileEvent;
+            watcher.Created += OnCommonFileEvent;
+            watcher.Deleted += OnCommonFileEvent;
+            watcher.Renamed += OnCommonFileEvent;
+
+            watcher.EnableRaisingEvents = true;
+        }
+
         public override void AbortWorker()
         {
+            watcher?.Dispose();
         }
 
         public override string ToString()
@@ -183,7 +185,7 @@ namespace TinyTasksKit.Worker
                 var next = Path.Combine(targetDir, name);
 
                 if (File.Exists(next)) File.Delete(next);
-                File.Move(current, next);
+                File.Copy(current, next);
             }
         }
     }

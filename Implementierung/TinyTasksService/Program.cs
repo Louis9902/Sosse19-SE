@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using TinyTasksKit;
 using TinyTasksKit.Worker;
 
@@ -9,38 +10,18 @@ namespace TinyTasksService
     public class Program
     {
         private static bool? hasConsole;
+
         private static string configuration;
+        private static bool headless = true;
 
         public static void Main(string[] args)
         {
-            var skipHeadless = false;
+            Logger.Erroring += Console.Error.WriteLine;
+            Logger.Warning += Console.Out.WriteLine;
 
-            if (args.Length != 0)
-            {
-                var index = 0;
-                do
-                {
-                    var name = args[index++];
-                    switch (name)
-                    {
-                        case "--debug":
-                        {
-                            skipHeadless = true;
-                            index++;
-                            configuration = args[index++];
-                            break;
-                        }
+            Arguments(args);
 
-                        case "--file":
-                        {
-                            configuration = args[index++];
-                            break;
-                        }
-                    }
-                } while (index < args.Length);
-            }
-
-            if (!skipHeadless && HasConsole)
+            if (headless && HasConsole)
             {
                 var info = new ProcessStartInfo
                 {
@@ -65,44 +46,83 @@ namespace TinyTasksService
                 return;
             }
 
-            if (string.IsNullOrEmpty(configuration))
+            if (string.IsNullOrEmpty(configuration) && !File.Exists(configuration))
             {
-                Logger.Error("Missing config file");
+                Logger.Error("No configuration file is specified or file is not found");
                 return;
             }
 
             var workers = new Workers(configuration);
-            var workersCache = new Dictionary<Guid, IWorker>();
+            var cache = new Dictionary<Guid, IWorker>();
 
-            Logger.Erroring += Console.WriteLine;
+            workers.Load(cache);
 
-            workers.Load(workersCache);
+            foreach (var worker in cache.Values)
+            {
+                RunSafe(() => worker.StartWorker());
+            }
 
             AppDomain.CurrentDomain.ProcessExit += (sender, arg) =>
             {
-                foreach (var worker in workersCache.Values)
+                foreach (var worker in cache.Values)
                 {
-                    try
-                    {
-                        worker.AbortWorker();
-                    }
-                    catch
-                    {
-                    }
+                    RunSafe(() => worker.AbortWorker());
                 }
 
-                workers.Save(workersCache);
+                workers.Save(cache);
             };
 
-            foreach (var worker in workersCache.Values)
+            while (Console.ReadKey().KeyChar != 'q') ;
+        }
+
+        private static void Arguments(IReadOnlyList<string> args)
+        {
+            if (args.Count < 1) return;
+
+            var length = args.Count;
+            var index = 0;
+
+            bool HasMoreArgs(int amount)
             {
-                try
+                return index + (amount - 1) < length;
+            }
+
+            do
+            {
+                var name = args[index++];
+                switch (name)
                 {
-                    worker.StartWorker();
+                    case "--debug":
+                    {
+                        headless = false;
+                        break;
+                    }
+
+                    case "-f" when HasMoreArgs(1):
+                    case "--file" when HasMoreArgs(1):
+                    {
+                        configuration = args[index++];
+                        break;
+                    }
+
+                    default:
+                    {
+                        Logger.Warn("Unknown argument {0}", name);
+                        break;
+                    }
                 }
-                catch
-                {
-                }
+            } while (index < args.Count);
+        }
+
+        private static void RunSafe(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("An error occured while executing some actions: {0}", ex);
             }
         }
 
