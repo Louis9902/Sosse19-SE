@@ -1,48 +1,127 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using TinyTasksKit;
 using TinyTasksKit.Worker;
-using TinyTasksKit.Worker.Group;
 
 namespace TinyTasksService
 {
     public class Program
     {
+        private static bool? hasConsole;
+        private static string configuration;
+
         public static void Main(string[] args)
         {
-            var workers = new Workers("./ExampleWorkers.dat");
+            var skipHeadless = false;
 
-            var cache = new Dictionary<Guid, IWorker>();
-
-            if (!workers.Load(cache))
+            if (args.Length != 0)
             {
-                var sync = typeof(SyncWorker);
-                
-                if (WorkerGroups.ObjectBindings.GetOrNothing(sync, out var group))
+                var index = 0;
+                do
                 {
-                    var worker = DefaultWorker.Instantiate<SyncWorker>(group,Guid.NewGuid());
-                    worker.Source = "c://some//more//source";
-                    worker.Target = "c://some//more//target";
-                    cache[worker.Label] = worker;
-                }
-                else
+                    var name = args[index++];
+                    switch (name)
+                    {
+                        case "--debug":
+                        {
+                            skipHeadless = true;
+                            index++;
+                            configuration = args[index++];
+                            break;
+                        }
+
+                        case "--file":
+                        {
+                            configuration = args[index++];
+                            break;
+                        }
+                    }
+                } while (index < args.Length);
+            }
+
+            if (!skipHeadless && HasConsole)
+            {
+                var info = new ProcessStartInfo
                 {
-                    Console.Error.Write("Missing Registry Keys");
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    FileName = typeof(Program).Assembly.Location,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                };
+
+                try
+                {
+                    using (var process = Process.Start(info))
+                    {
+                        process?.WaitForExit();
+                    }
+                }
+                catch (Exception)
+                {
+                    Logger.Error("Something happened while trying to run headless");
+                }
+
+                return;
+            }
+
+            if (string.IsNullOrEmpty(configuration))
+            {
+                Logger.Error("Missing config file");
+                return;
+            }
+
+            var workers = new Workers(configuration);
+            var workersCache = new Dictionary<Guid, IWorker>();
+
+            Logger.Erroring += Console.WriteLine;
+
+            workers.Load(workersCache);
+
+            AppDomain.CurrentDomain.ProcessExit += (sender, arg) =>
+            {
+                foreach (var worker in workersCache.Values)
+                {
+                    try
+                    {
+                        worker.AbortWorker();
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                workers.Save(workersCache);
+            };
+
+            foreach (var worker in workersCache.Values)
+            {
+                try
+                {
+                    worker.StartWorker();
+                }
+                catch
+                {
                 }
             }
-            else
-            {
-                Console.WriteLine("loaded from file " + cache.Count);
-            }
+        }
 
-            foreach (var pair in cache)
+        private static bool HasConsole
+        {
+            get
             {
-                Console.WriteLine($"{pair.Key} -> {pair.Value}");
-            }
+                if (hasConsole != null) return hasConsole.Value;
+                hasConsole = true;
+                try
+                {
+                    var height = Console.WindowHeight;
+                }
+                catch
+                {
+                    hasConsole = false;
+                }
 
-            if (!workers.Save(cache))
-            {
-                Console.Error.Write("Workers save failed");
+                return hasConsole.Value;
             }
         }
     }

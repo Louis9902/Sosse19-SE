@@ -37,6 +37,7 @@ namespace TinyTasksKit.Worker
             using (var watcher = new FileSystemWatcher())
             {
                 watcher.Path = source;
+                watcher.IncludeSubdirectories = true;
                 watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
 
                 watcher.Changed += OnCommonFileEvent;
