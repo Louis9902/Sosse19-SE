@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using TinyTasksKit;
 using TinyTasksKit.Worker;
 
@@ -18,32 +19,12 @@ namespace TinyTasksService
         {
             Logger.Erroring += Console.Error.WriteLine;
             Logger.Warning += Console.Out.WriteLine;
-
+            Console.WriteLine(args);
             Arguments(args);
 
             if (headless && HasConsole)
             {
-                var info = new ProcessStartInfo
-                {
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    FileName = typeof(Program).Assembly.Location,
-                    WindowStyle = ProcessWindowStyle.Hidden
-                };
-
-                try
-                {
-                    using (var process = Process.Start(info))
-                    {
-                        process?.WaitForExit();
-                    }
-                }
-                catch (Exception)
-                {
-                    Logger.Error("Something happened while trying to run headless");
-                }
-
-                return;
+                setConsoleWindowVisibility(false, Console.Title);
             }
 
             if (string.IsNullOrEmpty(configuration) && !File.Exists(configuration))
@@ -73,6 +54,29 @@ namespace TinyTasksService
             };
 
             while (Console.ReadKey().KeyChar != 'q') ;
+        }
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        public static void setConsoleWindowVisibility(bool visible, string title)
+        {
+            // below is Brandon's code           
+            //Sometimes System.Windows.Forms.Application.ExecutablePath works for the caption depending on the system you are running under.          
+            IntPtr hWnd = FindWindow(null, title);
+
+            if (hWnd != IntPtr.Zero)
+            {
+                if (!visible)
+                    //Hide the window                   
+                    ShowWindow(hWnd, 0); // 0 = SW_HIDE               
+                else
+                    //Show window again                   
+                    ShowWindow(hWnd, 1); //1 = SW_SHOWNORMA          
+            }
         }
 
         private static void Arguments(IReadOnlyList<string> args)
