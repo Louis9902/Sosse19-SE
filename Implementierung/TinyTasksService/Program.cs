@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using TinyTasksKit;
 using TinyTasksKit.Worker;
 
@@ -10,8 +8,6 @@ namespace TinyTasksService
 {
     public class Program
     {
-        private static bool? hasConsole;
-
         private static string configuration;
         private static bool headless = true;
 
@@ -19,12 +15,16 @@ namespace TinyTasksService
         {
             Logger.Erroring += Console.Error.WriteLine;
             Logger.Warning += Console.Out.WriteLine;
-            Console.WriteLine(args);
-            Arguments(args);
 
-            if (headless && HasConsole)
+#if DEBUG
+            Logger.Debugging += Console.Out.WriteLine;
+#endif
+
+            ParseArguments(args);
+
+            if (headless)
             {
-                setConsoleWindowVisibility(false, Console.Title);
+                HideConsole(false, Console.Title);
             }
 
             if (string.IsNullOrEmpty(configuration) && !File.Exists(configuration))
@@ -33,53 +33,30 @@ namespace TinyTasksService
                 return;
             }
 
-            var workers = new Workers(configuration);
-            var cache = new Dictionary<Guid, IWorker>();
+            var manager = new Workers(configuration);
+            var workers = new Dictionary<Guid, IWorker>();
 
-            workers.Load(cache);
+            manager.Load(workers);
 
-            foreach (var worker in cache.Values)
-            {
-                RunSafe(() => worker.StartWorker());
-            }
+            foreach (var worker in workers.Values) RunSafe(() => worker.StartWorker());
 
             AppDomain.CurrentDomain.ProcessExit += (sender, arg) =>
             {
-                foreach (var worker in cache.Values)
-                {
-                    RunSafe(() => worker.AbortWorker());
-                }
-
-                workers.Save(cache);
+                foreach (var worker in workers.Values) RunSafe(() => worker.AbortWorker());
+                manager.Save(workers);
             };
 
-            while (Console.ReadKey().KeyChar != 'q') ;
+            while (Console.ReadKey().Key != ConsoleKey.Escape) ;
         }
 
-        [DllImport("user32.dll")]
-        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
-        [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        public static void setConsoleWindowVisibility(bool visible, string title)
+        private static void HideConsole(bool visible, string title)
         {
-            // below is Brandon's code           
-            //Sometimes System.Windows.Forms.Application.ExecutablePath works for the caption depending on the system you are running under.          
-            IntPtr hWnd = FindWindow(null, title);
-
-            if (hWnd != IntPtr.Zero)
-            {
-                if (!visible)
-                    //Hide the window                   
-                    ShowWindow(hWnd, 0); // 0 = SW_HIDE               
-                else
-                    //Show window again                   
-                    ShowWindow(hWnd, 1); //1 = SW_SHOWNORMA          
-            }
+            var window = User32.FindWindow(null, title);
+            if (window == IntPtr.Zero) return;
+            User32.ShowWindow(window, !visible ? 0 : 1);
         }
 
-        private static void Arguments(IReadOnlyList<string> args)
+        private static void ParseArguments(IReadOnlyList<string> args)
         {
             if (args.Count < 1) return;
 
@@ -127,25 +104,6 @@ namespace TinyTasksService
             catch (Exception ex)
             {
                 Logger.Error("An error occured while executing some actions: {0}", ex);
-            }
-        }
-
-        private static bool HasConsole
-        {
-            get
-            {
-                if (hasConsole != null) return hasConsole.Value;
-                hasConsole = true;
-                try
-                {
-                    var height = Console.WindowHeight;
-                }
-                catch
-                {
-                    hasConsole = false;
-                }
-
-                return hasConsole.Value;
             }
         }
     }

@@ -1,0 +1,13 @@
+@startuml
+interface IPreference {
+    DataType : PreferenceDataType <<get>>
+    Visible : bool <<get>>
+    HasDefaultValue : bool <<get>>
+    HasValueSet : bool <<get>>
+    Complete : bool <<get>>
+    Name : string <<get>>
+    ValueType : Type <<get>>
+    ToView() : string
+    FromView(line:string) : void
+}
+@enduml

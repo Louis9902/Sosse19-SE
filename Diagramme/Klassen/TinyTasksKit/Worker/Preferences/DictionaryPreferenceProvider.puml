@@ -3,5 +3,5 @@ class DictionaryPreferenceProvider {
     - <<readonly>> preferences : IDictionary
     + DictionaryPreferenceProvider(map:IDictionary)
 }
-IPreferenceProvider <|-- DictionaryPreferenceProvider
+IPreferenceProvider <|.. DictionaryPreferenceProvider
 @enduml

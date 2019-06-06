@@ -4,6 +4,6 @@ namespace TinyTasksKit.Worker.Preferences
     {
         Primitive,
         Collection,
-        Path,
+        PathFolder,
     }
 }

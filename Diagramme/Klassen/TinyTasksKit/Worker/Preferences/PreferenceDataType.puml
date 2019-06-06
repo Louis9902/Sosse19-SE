@@ -1,0 +1,7 @@
+@startuml
+enum PreferenceDataType {
+    Primitive,
+    Collection,
+    PathFolder,
+}
+@enduml

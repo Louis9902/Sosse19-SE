@@ -1,19 +1,20 @@
 @startuml
-class "ListPreference"<T> {
+class "ScalarPreference"<T> {
     - <<readonly>> provider : IPreferenceProvider
-    + ListPreference(preferences:IPreferenceProvider, name:string, value:IList<T>)
+    + ScalarPreference(preferences:IPreferenceProvider, name:string, value:T)
     + DataType : PreferenceDataType <<get>>
     + Visible : bool <<get>> = true
     + HasDefaultValue : bool <<get>>
     + HasValueSet : bool <<get>>
     + Complete : bool <<get>>
     + Name : string <<get>>
-    + Value : IList<T> <<get>> <<set>>
+    + Value : T <<get>> <<set>>
     + ValueType : Type <<get>>
     + ToView() : string
     + FromView(line:string) : void
-    + ToggleVisibility() : ListPreference<T>
-    + UpdateDataType(dataType:PreferenceDataType) : ListPreference<T>
+    + ToggleVisibility() : ScalarPreference<T>
+    + UpdateDataType(dataType:PreferenceDataType) : ScalarPreference<T>
+    - {static} TryParseValue(input:string, result:TTo) : bool
 }
-IPreference <|.. "ListPreference"
+IPreference <|.. "ScalarPreference"
 @enduml

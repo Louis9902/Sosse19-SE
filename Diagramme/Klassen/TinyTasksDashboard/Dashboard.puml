@@ -1,16 +1,18 @@
 @startuml
 class Dashboard <<partial>> {
-    - <<const>> Configuration : string = "Workers.dat"
-    - <<readonly>> cache : IDictionary<Guid, IWorker>
-    - <<readonly>> workers : Workers
-    - hasMadeChanges : bool
-    + Overview()
+    - <<readonly>> manager : Workers
+    - <<readonly>> workers : IDictionary<Guid, IWorker>
+    + Dashboard()
+    - {static} GetDefaultConfiguration() : string
     - {static} InitializeLogger() : void
-    - OnOverviewLoad(sender:object, args:EventArgs) : void
-    - OnOverviewSave(sender:object, args:FormClosingEventArgs) : void
-    - RefreshWorkersView() : void
-    - OnWorkerCellClick(sender:object, args:DataGridViewCellEventArgs) : void
-    - OpenWorkerSelect(group:Guid, label:Guid) : bool
-    - OpenWorkerProperties(group:Guid, label:Guid) : void
+    - {static} HandleLoggerMessage(message:string) : void
+    - LoadWorkers() : void
+    - SaveWorkers() : void
+    - ViewRefresh() : void
+    - ShowWorker(worker:IWorker) : void
+    - OnFormLoading(sender:object, args:EventArgs) : void
+    - OnFormClosing(sender:object, args:FormClosingEventArgs) : void
+    - OnCellClick(sender:object, args:DataGridViewCellEventArgs) : void
+    - {static} DialogWorkerType(group:Guid, label:Guid) : bool
 }
 @enduml

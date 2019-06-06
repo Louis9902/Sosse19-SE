@@ -1,5 +1,10 @@
 @startuml
 class Program {
+    - {static} configuration : string
+    - {static} headless : bool = true
     + {static} Main(args:string[]) : void
+    - {static} HideConsole(visible:bool, title:string) : void
+    - {static} ParseArguments(args:IReadOnlyList<string>) : void
+    - {static} RunSafe(action:Action) : void
 }
 @enduml

@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.Linq;
+using System.Media;
 using System.Windows.Forms;
 using TinyTasksDashboard.Properties;
 using TinyTasksKit.Worker;
@@ -11,126 +12,90 @@ namespace TinyTasksDashboard
     public partial class Parameters : Form
     {
         private readonly IWorker worker;
-        private bool bypassCloseEvent;
+        private readonly PreferenceSet preferences;
+
+        private bool avoid;
+        private bool abort;
 
         public Parameters(IWorker worker)
         {
             this.worker = worker;
+            preferences = worker.Preferences;
             InitializeComponent();
-            Initialize();
+            ViewRefresh();
+            DialogResult = DialogResult.None;
         }
 
-        public bool HasAllValues { get; private set; }
-        public bool Abort { get; private set; }
-
-        private void Initialize()
+        private void ViewRefresh()
         {
-            Group.Text = $@"Group: {worker.Group}";
-            Label.Text = $@"Label: {worker.Label}";
-            LoadRows();
+            labelGroup.Text = $@"Group: {worker.Group} of type {worker.GetType().Name}";
+            labelLabel.Text = $@"Label: {worker.Label}";
+            foreach (var preference in preferences.GetVisible()) ShowPreference(preference);
         }
 
-        private void LoadRows()
+        private void ShowPreference(IPreference preference)
         {
-            var preferences = worker.Preferences;
-
-            foreach (var preference in preferences.GetVisible())
-            {
-                Options.Rows.Add(preference, preference.Name, preference.ToView());
-            }
+            options.Rows.Add(preference.Name, preference.ToView(), preference);
         }
 
         private void SaveRows()
         {
-            foreach (DataGridViewRow row in Options.Rows)
+            foreach (DataGridViewRow row in options.Rows)
             {
-                var preference = (IPreference) row.Cells[0].Value;
-                var value = row.Cells[2].Value as string;
+                var preference = (IPreference) row.Cells[2].Value;
+                var value = row.Cells[1].Value as string;
                 preference.FromView(value);
             }
         }
 
-        private void OnWindowClose(object sender, FormClosingEventArgs args)
+        private void RefreshDialogResult()
         {
-            if (bypassCloseEvent) return;
-            switch (args.CloseReason)
-            {
-                case CloseReason.TaskManagerClosing:
-                case CloseReason.WindowsShutDown:
-                {
-                    SaveRows();
-                    break;
-                }
-
-                case CloseReason.UserClosing:
-                {
-                    var result = MessageBox.Show(Resources.SaveMessage, Resources.Warning,
-                        MessageBoxButtons.YesNoCancel,
-                        MessageBoxIcon.Warning);
-
-                    switch (result)
-                    {
-                        case DialogResult.Yes:
-                        {
-                            SaveRows();
-                            Abort = false;
-                            HasAllValues = worker.Preferences.GetAll()
-                                .Where(preference => preference.Visible)
-                                .All(preference => preference.HasValueSet);
-                            break;
-                        }
-
-                        case DialogResult.No:
-                        {
-                            Abort = true;
-                            HasAllValues = worker.Preferences.GetAll()
-                                .Where(preference => preference.Visible)
-                                .All(preference => preference.HasValueSet);
-                            break;
-                        }
-
-                        case DialogResult.Cancel:
-                        {
-                            args.Cancel = true;
-                            break;
-                        }
-                    }
-
-                    break;
-                }
-            }
-        }
-
-        private void OnButtonOkay(object sender, EventArgs args)
-        {
-            bypassCloseEvent = true;
-            SaveRows();
-            Abort = false;
-            HasAllValues = worker.Preferences.GetAll()
+            var consent = worker.Preferences.GetAll()
                 .Where(preference => preference.Visible)
                 .All(preference => preference.HasValueSet);
+            DialogResult = consent ? DialogResult.OK : DialogResult.No;
+        }
+
+        private void OnFormClosing(object sender, FormClosingEventArgs args)
+        {
+            if (abort) args.Cancel = true;
+            if (avoid) return;
+            RefreshDialogResult();
+        }
+
+        private void ClickAccept(object sender, EventArgs args)
+        {
+            RefreshDialogResult();
+            if (DialogResult != DialogResult.OK)
+            {
+                abort = true;
+                SystemSounds.Exclamation.Play();
+                return;
+            }
+
+            SaveRows();
+            abort = false;
+            avoid = true;
             Close();
         }
 
-        private void OnButtonCancel(object sender, EventArgs args)
+        private void ClickCancel(object sender, EventArgs args)
         {
-            bypassCloseEvent = true;
-            Abort = true;
-            HasAllValues = worker.Preferences.GetAll()
-                .Where(preference => preference.Visible)
-                .All(preference => preference.HasValueSet);
+            RefreshDialogResult();
+            abort = false;
+            avoid = true;
             Close();
         }
 
         private void OnCellClick(object sender, DataGridViewCellEventArgs args)
         {
             if (args.RowIndex < 0) return;
-            if (args.ColumnIndex != 2) return;
-            var preference = (IPreference) Options.Rows[args.RowIndex].Cells[0].Value;
+            if (args.ColumnIndex != 1) return;
+            var preference = (IPreference) options.Rows[args.RowIndex].Cells[2].Value;
 
             switch (preference.DataType)
             {
-                case PreferenceDataType.Path when preference is ScalarPreference<string> content:
+                case PreferenceDataType.PathFolder when preference is ScalarPreference<string> content:
                 {
                     using (var browser = new FolderBrowserDialog())
                     {
@@ -138,7 +103,7 @@ namespace TinyTasksDashboard
                         var result = browser.ShowDialog();
                         if (result != DialogResult.OK) break;
                         content.Value = browser.SelectedPath;
-                        Options.Rows[args.RowIndex].Cells[2].Value = browser.SelectedPath;
+                        options.Rows[args.RowIndex].Cells[1].Value = browser.SelectedPath;
                     }
 
                     break;
@@ -147,15 +112,9 @@ namespace TinyTasksDashboard
                 case PreferenceDataType.Primitive:
                     break;
                 case PreferenceDataType.Collection:
+                    // ToDo: Support Collection Types
                     break;
             }
-        }
-
-        public void Reset()
-        {
-            bypassCloseEvent = false;
-            HasAllValues = false;
-            Abort = false;
         }
     }
 }

@@ -9,6 +9,9 @@
 //------------------------------------------------------------------------------
 
 namespace TinyTasksDashboard.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -58,29 +61,29 @@ namespace TinyTasksDashboard.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unexpected Exception.
-        /// </summary>
-        internal static string LoggerErrorTitle {
-            get {
-                return ResourceManager.GetString("LoggerErrorTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Do you want to save the changes?.
         /// </summary>
-        internal static string SaveMessage {
+        internal static string MessageCloseSave {
             get {
-                return ResourceManager.GetString("SaveMessage", resourceCulture);
+                return ResourceManager.GetString("MessageCloseSave", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning.
+        ///   Looks up a localized string similar to Save Changes.
         /// </summary>
-        internal static string Warning {
+        internal static string MessageCloseSaveHeader {
             get {
-                return ResourceManager.GetString("Warning", resourceCulture);
+                return ResourceManager.GetString("MessageCloseSaveHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception.
+        /// </summary>
+        internal static string MessageLoggerEventHeader {
+            get {
+                return ResourceManager.GetString("MessageLoggerEventHeader", resourceCulture);
             }
         }
     }

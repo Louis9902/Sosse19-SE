@@ -1,57 +1,72 @@
 @startuml TinyTasks
+left to right direction
 
 package TinyTasksDashboard {
-    '!include .\\TinyTasksDashboard\Program.puml
-    !include .\\TinyTasksDashboard\Dashboard.puml
-    !include .\\TinyTasksDashboard\Dashboard.Designer.puml
-    !include .\\TinyTasksDashboard\Parameters.puml
-    !include .\\TinyTasksDashboard\Parameters.Designer.puml
+    '!include ./TinyTasksDashboard/Program.puml
+    !include ./TinyTasksDashboard/Dashboard.puml
+    !include ./TinyTasksDashboard/Dashboard.Designer.puml
+    !include ./TinyTasksDashboard/Parameters.puml
+    !include ./TinyTasksDashboard/Parameters.Designer.puml
 }
 
 package TinyTasksService {
-    '!include .\\TinyTasksService\Program.puml
+    !include ./TinyTasksService/Program.puml
 }
 
 package TinyTasksKit {
-    !include .\\TinyTasksKit\Workers.puml
-    !include .\\TinyTasksKit\Logger.puml
-    package TinyTasksKit.Utilities {
-        !include .\\TinyTasksKit\Utilities\ActuallyAdditions.puml
-        !include .\\TinyTasksKit\Utilities\TypeObjectBindings.puml
-    }
     package TinyTasksKit.Worker {
-        !include .\\TinyTasksKit\Worker\DefaultWorker.puml
-        !include .\\TinyTasksKit\Worker\IWorker.puml
-        !include .\\TinyTasksKit\Worker\SyncWorker.puml
         package TinyTasksKit.Worker.Group {
-            !include .\\TinyTasksKit\Worker\Group\WorkerGroup.puml
-            !include .\\TinyTasksKit\Worker\Group\WorkerGroups.puml
+            !include ./TinyTasksKit/Worker/Group/WorkerGroup.puml
+            !include ./TinyTasksKit/Worker/Group/WorkerGroups.puml
         }
         package TinyTasksKit.Worker.Preferences {
-            !include .\\TinyTasksKit\Worker\Preferences\DictionaryPreferenceProvider.puml
-            !include .\\TinyTasksKit\Worker\Preferences\IPreferenceProvider.puml
-            !include .\\TinyTasksKit\Worker\Preferences\ListPreference.puml
-            !include .\\TinyTasksKit\Worker\Preferences\Preference.puml
-            !include .\\TinyTasksKit\Worker\Preferences\PreferenceSet.puml
+            !include ./TinyTasksKit/Worker/Preferences/DictionaryPreferenceProvider.puml
+            !include ./TinyTasksKit/Worker/Preferences/IPreferenceProvider.puml
+            !include ./TinyTasksKit/Worker/Preferences/IPreference.puml
+            !include ./TinyTasksKit/Worker/Preferences/PreferenceDataType.puml
+            !include ./TinyTasksKit/Worker/Preferences/ListPreference.puml
+            !include ./TinyTasksKit/Worker/Preferences/ScalarPreference.puml
+            !include ./TinyTasksKit/Worker/Preferences/PreferenceSet.puml
         }
+        !include ./TinyTasksKit/Worker/DefaultWorker.puml
+        !include ./TinyTasksKit/Worker/IWorker.puml
+        !include ./TinyTasksKit/Worker/SyncWorker.puml
     }
+    package TinyTasksKit.Utilities {
+        !include ./TinyTasksKit/Utilities/ActuallyAdditions.puml
+        !include ./TinyTasksKit/Utilities/TypeObjectBindings.puml
+    }
+    !include ./TinyTasksKit/Workers.puml
+    !include ./TinyTasksKit/Logger.puml
 }
 
-Workers --0)-- Dashboard : configuration file
-Workers --(0-- WorkerGroups : uses group index of
+Workers -- Dashboard : configuration cache file
+Workers -- Program : configuration cache file
 
-WorkerGroups "1" --> "1" TypeObjectBindings : has
-WorkerGroups -- WorkerGroup : uses for detection and registering
+Workers -- WorkerGroups : IWorker class register
 
-DefaultWorker "1" o--> "1" PreferenceSet : manages
+WorkerGroups - TypeObjectBindings : has for registering
+WorkerGroups - WorkerGroup : uses for detection and registering
+TypeObjectBindings - InsertMode : uses
 
-PreferenceSet "1" o--> "0..*" Preference : consists out of
-PreferenceSet "1" o--> "0..*" ListPreference : consists out of
-PreferenceSet "1" o--> "1" IPreferenceProvider : uses
+DefaultWorker "1" o-> "1" PreferenceSet : manages
+
+PreferenceSet "1" o-> "0..*" IPreference : consists out of
+PreferenceSet "1" o-> "1" IPreferenceProvider : uses for value management
 
 Workers "1" --> "0..*" IWorker : loads and stores
 
-TypeObjectBindings -- InsertMode : uses
+Dashboard - Parameters : more information displayed in
 
-Dashboard -- Parameters : more informations displayed in
+note left of Parameters
+  This uses the Preferences API to get an all
+  properties which are required for the selected worker
+  <b>This will ignore hidden preferences</b>
+end note
+
+note left of Program
+  This is the service running in the background. To start this service
+  the user <b>must</b> supply the '--file' argument which specifies the input
+  configuration.
+end note
 @enduml

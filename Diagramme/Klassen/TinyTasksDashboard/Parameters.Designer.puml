@@ -1,13 +1,15 @@
 @startuml
 class Parameters <<partial>> {
+    - components : IContainer = null
     # <<override>> Dispose(disposing:bool) : void
     - InitializeComponent() : void
-    - Group : System.Windows.Forms.Label
-    - Label : System.Windows.Forms.Label
-    - Options : System.Windows.Forms.DataGridView
-    - OptionsGridLabel : System.Windows.Forms.DataGridViewTextBoxColumn
-    - OptionsGridValue : System.Windows.Forms.DataGridViewTextBoxColumn
-    - Okay : System.Windows.Forms.Button
-    - Cancel : System.Windows.Forms.Button
+    - labelGroup : System.Windows.Forms.Label
+    - labelLabel : System.Windows.Forms.Label
+    - options : System.Windows.Forms.DataGridView
+    - optionsObject : System.Windows.Forms.DataGridViewTextBoxColumn
+    - optionsLabel : System.Windows.Forms.DataGridViewTextBoxColumn
+    - optionsValue : System.Windows.Forms.DataGridViewTextBoxColumn
+    - controlOkay : System.Windows.Forms.Button
+    - controlCancel : System.Windows.Forms.Button
 }
 @enduml

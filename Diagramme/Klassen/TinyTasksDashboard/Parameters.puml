@@ -1,8 +1,17 @@
 @startuml
 class Parameters <<partial>> {
     - <<readonly>> worker : IWorker
-    + Preferences(worker:IWorker)
-    + RequirementsAreSet : bool <<get>>
-    - Initialize() : void
+    - <<readonly>> preferences : PreferenceSet
+    - avoid : bool
+    - abort : bool
+    + Parameters(worker:IWorker)
+    - ViewRefresh() : void
+    - ShowPreference(preference:IPreference) : void
+    - SaveRows() : void
+    - RefreshDialogResult() : void
+    - OnFormClosing(sender:object, args:FormClosingEventArgs) : void
+    - ClickAccept(sender:object, args:EventArgs) : void
+    - ClickCancel(sender:object, args:EventArgs) : void
+    - OnCellClick(sender:object, args:DataGridViewCellEventArgs) : void
 }
 @enduml

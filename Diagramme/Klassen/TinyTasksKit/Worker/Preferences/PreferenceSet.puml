@@ -5,11 +5,13 @@ class PreferenceSet {
     - preferences : IDictionary
     - provider : IPreferenceProvider
     + PreferenceSet()
-    - HasPreferenceCache(name:string, preference:Preference<T>) : bool
+    + {static} IsNullOrTypeDefault(value:T) : bool
+    - HasPreferenceCache(name:string, preference:ScalarPreference<T>) : bool
     - HasPreferenceListCache(name:string, preference:ListPreference<T>) : bool
-    + Preference(name:string, value:T) : Preference<T>
+    + Preference(name:string, value:T) : ScalarPreference<T>
     + ListPreference(name:string, values:IList<T>) : ListPreference<T>
-    + GetEnumerator() : IEnumerator
+    + GetAll() : IEnumerable<IPreference>
+    + GetVisible() : IEnumerable<IPreference>
     + Load(stream:Stream) : void
     + Save(stream:Stream) : void
 }

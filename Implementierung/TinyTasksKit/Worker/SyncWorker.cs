@@ -8,6 +8,8 @@ namespace TinyTasksKit.Worker
     [WorkerGroup("2258b292-896a-4547-937c-6f0e865d5419")]
     public class SyncWorker : DefaultWorker
     {
+        private const string TempFileSuffix = ".tmp";
+
         private readonly ScalarPreference<string> source;
         private readonly ScalarPreference<string> target;
 
@@ -17,9 +19,8 @@ namespace TinyTasksKit.Worker
 
         public SyncWorker()
         {
-            source = Preferences.Preference<string>("source").UpdateDataType(PreferenceDataType.Path);
-            target = Preferences.Preference<string>("target").UpdateDataType(PreferenceDataType.Path);
-            caches = Preferences.ListPreference<string>("caches").ToggleVisibility();
+            source = Preferences.Preference<string>("source").UpdateDataType(PreferenceDataType.PathFolder);
+            target = Preferences.Preference<string>("target").UpdateDataType(PreferenceDataType.PathFolder);
         }
 
         public string Source
@@ -65,7 +66,7 @@ namespace TinyTasksKit.Worker
                 }
                 else
                 {
-                    File.Copy(srcNew, tgtNew);
+                    CopyFileSafe(srcNew, tgtNew);
                 }
 
                 return;
@@ -95,7 +96,7 @@ namespace TinyTasksKit.Worker
                 {
                     if (File.Exists(src))
                     {
-                        if (!File.Exists(tgt)) File.Copy(src, tgt);
+                        if (!File.Exists(tgt)) CopyFileSafe(src, tgt);
                         // src is file and tgt already exists, maybe override?
                         break;
                     }
@@ -109,7 +110,7 @@ namespace TinyTasksKit.Worker
                     if (File.Exists(src))
                     {
                         if (File.Exists(tgt)) File.Delete(tgt);
-                        File.Copy(src, tgt);
+                        CopyFileSafe(src, tgt);
                         break;
                     }
 
@@ -148,7 +149,7 @@ namespace TinyTasksKit.Worker
                 IncludeSubdirectories = true,
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
-            
+
             watcher.Changed += OnCommonFileEvent;
             watcher.Created += OnCommonFileEvent;
             watcher.Deleted += OnCommonFileEvent;
@@ -185,8 +186,16 @@ namespace TinyTasksKit.Worker
                 var next = Path.Combine(targetDir, name);
 
                 if (File.Exists(next)) File.Delete(next);
-                File.Copy(current, next);
+                CopyFileSafe(current, next);
             }
+        }
+
+        private static void CopyFileSafe(string src, string tgt)
+        {
+            var tmp = tgt + TempFileSuffix;
+            File.Copy(src, tmp);
+            File.Delete(tgt);
+            File.Move(tmp, tgt);
         }
     }
 }

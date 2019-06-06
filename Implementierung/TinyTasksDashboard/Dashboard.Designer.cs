@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.ComponentModel;
+using System.Windows.Forms;
 using static System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode;
 
 namespace TinyTasksDashboard
@@ -30,57 +31,57 @@ namespace TinyTasksDashboard
         /// </summary>
         private void InitializeComponent()
         {
-            this.Workers = new System.Windows.Forms.DataGridView();
+            this.overview = new System.Windows.Forms.DataGridView();
             
-            this.WorkersGridGroups = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.WorkersGridLabels = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.WorkersGridKind = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.overviewGroup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.overviewLabel = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.overviewObject = new System.Windows.Forms.DataGridViewTextBoxColumn();
             
-            ((System.ComponentModel.ISupportInitialize) (this.Workers)).BeginInit();
+            ((ISupportInitialize) (this.overview)).BeginInit();
             
             this.SuspendLayout();
             
-            this.Workers.Location = new System.Drawing.Point(0, 0);
-            this.Workers.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.Workers.Name = "Workers";
-            this.Workers.Size = new System.Drawing.Size(878, 519);
-            this.Workers.TabIndex = 0;
+            this.overview.Location = new System.Drawing.Point(0, 0);
+            this.overview.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.overview.Name = "overview";
+            this.overview.Size = new System.Drawing.Size(878, 519);
+            this.overview.TabIndex = 0;
             
-            this.Workers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.overview.Dock = System.Windows.Forms.DockStyle.Fill;
             
-            this.Workers.ShowEditingIcon = false;
-            this.Workers.RowHeadersVisible = false;
-            this.Workers.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.Workers.AllowUserToResizeColumns = false;
-            this.Workers.AllowUserToResizeRows = false;
-            this.Workers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.Workers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[]
+            this.overview.ShowEditingIcon = false;
+            this.overview.RowHeadersVisible = false;
+            this.overview.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.overview.AllowUserToResizeColumns = false;
+            this.overview.AllowUserToResizeRows = false;
+            this.overview.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.overview.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[]
             {
-                this.WorkersGridGroups,
-                this.WorkersGridLabels,
-                this.WorkersGridKind
+                this.overviewGroup,
+                this.overviewLabel,
+                this.overviewObject
             });
-            this.Workers.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellClick);
+            this.overview.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellClick);
             
-            this.WorkersGridGroups.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.WorkersGridGroups.FillWeight = 132.4873F;
-            this.WorkersGridGroups.HeaderText = "Group";
-            this.WorkersGridGroups.Name = "WorkersGridGroups";
-            this.WorkersGridGroups.Visible = false;
+            this.overviewGroup.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.overviewGroup.FillWeight = 132.4873F;
+            this.overviewGroup.HeaderText = "Group";
+            this.overviewGroup.Name = "overviewGroup";
+            this.overviewGroup.ReadOnly = true;
             
-            this.WorkersGridLabels.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.WorkersGridLabels.FillWeight = 132.4873F;
-            this.WorkersGridLabels.HeaderText = "Label";
-            this.WorkersGridLabels.Name = "WorkersGridLabels";
-            this.WorkersGridLabels.ReadOnly = true;
+            this.overviewLabel.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.overviewLabel.FillWeight = 132.4873F;
+            this.overviewLabel.HeaderText = "Label";
+            this.overviewLabel.Name = "overviewLabel";
+            this.overviewLabel.ReadOnly = true;
             
-            this.WorkersGridKind.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.WorkersGridKind.FillWeight = 132.4873F;
-            this.WorkersGridKind.HeaderText = "Kind";
-            this.WorkersGridKind.Name = "WorkersGridKind";
-            this.WorkersGridKind.ReadOnly = true;
+            this.overviewObject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.overviewObject.FillWeight = 132.4873F;
+            this.overviewObject.HeaderText = "Object <Internal>";
+            this.overviewObject.Name = "overviewObject";
+            this.overviewObject.Visible = false;
             
-            this.Controls.Add(this.Workers);
+            this.Controls.Add(this.overview);
             
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -91,10 +92,10 @@ namespace TinyTasksDashboard
             this.Text = "Worker Dashboard";
             this.Font = new System.Drawing.Font("Courier New", 8.25F);
             
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnWindowClose);
-            this.Load += new System.EventHandler(this.OnOverviewLoad);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
+            this.Load += new System.EventHandler(this.OnFormLoading);
             
-            ((System.ComponentModel.ISupportInitialize) (this.Workers)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.overview)).EndInit();
             this.ResumeLayout(false);
         }
 
@@ -102,9 +103,9 @@ namespace TinyTasksDashboard
 
         #endregion
 
-        private System.Windows.Forms.DataGridView Workers;
-        private System.Windows.Forms.DataGridViewTextBoxColumn WorkersGridLabels;
-        private System.Windows.Forms.DataGridViewTextBoxColumn WorkersGridGroups;
-        private System.Windows.Forms.DataGridViewTextBoxColumn WorkersGridKind;
+        private System.Windows.Forms.DataGridView overview;
+        private System.Windows.Forms.DataGridViewTextBoxColumn overviewLabel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn overviewGroup;
+        private System.Windows.Forms.DataGridViewTextBoxColumn overviewObject;
     }
 }

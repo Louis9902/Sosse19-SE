@@ -16,6 +16,6 @@ class WorkerInfo {
     + Group : Guid <<get>> <<set>>
     + Label : Guid <<get>> <<set>>
 }
-IWorker <|-- DefaultWorker
+IWorker <|.. DefaultWorker
 DefaultWorker +-- WorkerInfo
 @enduml
