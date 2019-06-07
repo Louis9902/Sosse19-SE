@@ -1,5 +1,4 @@
 @startuml TinyTasks
-'left to right direction
 
 !define include "<<include>>"
 !define extends "<<extends>>"
@@ -46,8 +45,8 @@ rectangle Service {
         abort workers
     "
 
-    start ..> load : extends
     abort ..> start : extends
+    start ..> load : include
     abort ..> save : include
 }
 
