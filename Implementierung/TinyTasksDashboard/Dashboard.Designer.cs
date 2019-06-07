@@ -51,9 +51,11 @@ namespace TinyTasksDashboard
             
             this.overview.ShowEditingIcon = false;
             this.overview.RowHeadersVisible = false;
-            this.overview.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.overview.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
+            this.overview.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.overview.AllowUserToResizeColumns = false;
             this.overview.AllowUserToResizeRows = false;
+            this.overview.AllowUserToDeleteRows = true;
             this.overview.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.overview.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[]
             {
@@ -61,7 +63,8 @@ namespace TinyTasksDashboard
                 this.overviewLabel,
                 this.overviewObject
             });
-            this.overview.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellClick);
+            this.overview.CellDoubleClick += OnCellClick;
+            this.overview.UserDeletedRow += OnRowDelete;
             
             this.overviewGroup.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.overviewGroup.FillWeight = 132.4873F;
@@ -79,6 +82,7 @@ namespace TinyTasksDashboard
             this.overviewObject.FillWeight = 132.4873F;
             this.overviewObject.HeaderText = "Object <Internal>";
             this.overviewObject.Name = "overviewObject";
+            this.overviewObject.ReadOnly = true;
             this.overviewObject.Visible = false;
             
             this.Controls.Add(this.overview);

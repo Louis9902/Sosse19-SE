@@ -136,6 +136,14 @@ namespace TinyTasksDashboard
             }
         }
 
+        private void OnRowDelete(object sender, DataGridViewRowEventArgs args)
+        {
+            if (args.Row.Cells[2].Value is IWorker worker)
+            {
+                workers.Remove(worker.Label);
+            }
+        }
+
         private static bool DialogWorkerType(out Guid group, out Guid label)
         {
             label = default;
