@@ -7,15 +7,27 @@ using TinyTasksKit.Worker.Group;
 
 namespace TinyTasksKit
 {
+    /// <summary>
+    /// Represents an adapter which allows the serialisation and deserialization of IWorker objects to a specified file.
+    /// This also allows the creation of new IWorker objects. 
+    /// </summary>
     public class Workers
     {
         private readonly string configuration;
-
+        
         public Workers(string path)
         {
             configuration = path;
         }
 
+        /// <summary>
+        /// Creates a new object of the specified type.
+        /// This is important to use instead of the new operator, because this will invoke the required parameters
+        /// for the DefaultWorker.
+        /// </summary>
+        /// <typeparam name="T">The type of IWorker</typeparam>
+        /// <returns>The new IWorker object</returns>
+        /// <exception cref="ArgumentException">If the specified type is not registered in the WorkerGroups</exception>
         public static T CreateWorker<T>() where T : IWorker
         {
             if (WorkerGroups.ObjectBindings.GetOrNothing(typeof(T), out var group))
@@ -26,6 +38,11 @@ namespace TinyTasksKit
             throw new ArgumentException("missing group for worker");
         }
 
+        /// <summary>
+        /// Loads the IWorker objects from the configuration into the IDictionary.
+        /// </summary>
+        /// <param name="workers">The IDictionary to store the workers</param>
+        /// <returns>true if the operation was successful otherwise false</returns>
         public bool Load(IDictionary<Guid, IWorker> workers)
         {
             if (!File.Exists(configuration)) return false;
@@ -89,6 +106,11 @@ namespace TinyTasksKit
             return true;
         }
 
+        /// <summary>
+        /// Saves the IWorker objects from the IDictionary into the configuration.
+        /// </summary>
+        /// <param name="workers">The IDictionary to read the workers from</param>
+        /// <returns>true if the operation was successful otherwise false</returns>
         public bool Save(IDictionary<Guid, IWorker> workers)
         {
             try

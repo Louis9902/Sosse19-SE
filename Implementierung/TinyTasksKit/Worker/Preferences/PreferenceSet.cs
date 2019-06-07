@@ -8,6 +8,9 @@ using static TinyTasksKit.Worker.Preferences.PreferenceDataType;
 
 namespace TinyTasksKit.Worker.Preferences
 {
+    /// <summary>
+    /// Represents a collection of IPreferences.
+    /// </summary>
     public class PreferenceSet
     {
         private static readonly IFormatter Formatter = new BinaryFormatter();
@@ -41,6 +44,13 @@ namespace TinyTasksKit.Worker.Preferences
 
         public IPreference this[string name] => derivations[name] as IPreference;
 
+        /// <summary>
+        /// Will create a new ScalarPreference preference if is does not exist, otherwise it will return the cached.
+        /// </summary>
+        /// <param name="name">The name of the preference</param>
+        /// <param name="value">The default value of the preference</param>
+        /// <typeparam name="T">The type of the preference value</typeparam>
+        /// <returns>The preference, never null</returns>
         public ScalarPreference<T> Preference<T>(string name, T value = default)
         {
             if (HasPreferenceCache<T>(name, out var result)) return result;
@@ -50,6 +60,13 @@ namespace TinyTasksKit.Worker.Preferences
             return result;
         }
 
+        /// <summary>
+        /// Will create a new ListPreference preference if is does not exist, otherwise it will return the cached.
+        /// </summary>
+        /// <param name="name">The name of the preference</param>
+        /// <param name="values">The default values of the preference</param>
+        /// <typeparam name="T">The type of the preference value</typeparam>
+        /// <returns>The preference, never null</returns>
         public ListPreference<T> ListPreference<T>(string name, IList<T> values = default)
         {
             if (HasPreferenceListCache<T>(name, out var result)) return result;
@@ -59,11 +76,22 @@ namespace TinyTasksKit.Worker.Preferences
             return result;
         }
 
+        /// <summary>
+        /// A IEnumerable which contains all preferences of this set.
+        /// </summary>
+        /// <returns>The IEnumerable with all values</returns>
         public IEnumerable<IPreference> GetAll()
         {
             return derivations.Values.Cast<IPreference>();
         }
 
+        /// <summary>
+        /// A IEnumerable which contains all visible preferences of this set.
+        /// </summary>
+        /// <returns>The IEnumerable with all visible values</returns>
+        /// <see cref="IPreference.Visible"/>
+        /// <seealso cref="Preferences.ScalarPreference{T}.ToggleVisibility()"/>
+        /// <seealso cref="Preferences.ListPreference{T}.ToggleVisibility()"/>
         public IEnumerable<IPreference> GetVisible()
         {
             return GetAll().Where(preference => preference.Visible);

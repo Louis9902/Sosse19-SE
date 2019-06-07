@@ -3,7 +3,7 @@ using System;
 namespace TinyTasksKit.Worker.Group
 {
     /// <summary>
-    /// 
+    /// Marker attribute for IWorker types. This also includes the group id for the worker.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class WorkerGroup : Attribute

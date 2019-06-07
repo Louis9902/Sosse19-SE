@@ -3,6 +3,10 @@ using System.IO;
 
 namespace TinyTasksKit
 {
+    /// <summary>
+    /// Common Logger implementation.
+    /// For receiving logs just subscribe to the desired event.
+    /// </summary>
     public static class Logger
     {
         private const string HeaderInfo = "[Info]: ";
