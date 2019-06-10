@@ -1,63 +1,78 @@
-@startuml
+@startuml TinyTasks
 
 actor TinyTaskServices
+
+participant "Program" as program
+participant "manager : Workers" as manager
+participant "workers : IDictionary" as workers
+participant "DefaultWorker" as default 
+participant "worker : SyncWorker" as worker
+participant "preferences : PreferenceSet" as preferences
+
 activate TinyTaskServices
+TinyTaskServices -> program
+activate program
 
-TinyTaskServices -> Program
-activate Program
-
-Program -> "manger:Worker" as manager : new Worker(configuration)
+program -> manager : new Workers(configuration)
 activate manager
-manager -->Program : manager 
+manager --> program
 deactivate manager
 
-Program -> "dict: Dictionary" as dict : new Dictionary<Guid, IWorker>()
-dict --> Program : workers
-deactivate dict
+program -> workers : new Dictionary<Guid, IWorker>()
+activate workers
+workers --> program
+deactivate workers
 
-Program-> manager : Load()
+program-> manager : Load(workers)
 activate manager
-loop foreach ConfigEntry
-manager -> DefaultWorkers : Instantiate(clazz, group, label)
+loop foreach entry in config
 
-activate manager
-activate DefaultWorkers
-DefaultWorkers --> manager: worker
-deactivate manager
+    manager -> default : <u>Instantiate(clazz, group, label)</u>
 
-DefaultWorkers -> "sync:SyncWorker" as sync
-deactivate DefaultWorkers
-activate sync
+    activate default
+    'default --> manager: worker
+    'deactivate default
+    
+    default -> worker : new()
+    activate worker
 
-sync -> "pref:PreferenceSet" as pref : new PreferenceSet()
-activate pref
-pref --> sync : get()
-deactivate pref
-deactivate sync
+    worker -> preferences : new PreferenceSet()
+    activate preferences
+    preferences --> worker
+    deactivate preferences
 
-group example 
-sync -> pref : Preference<string>("source")
-activate sync
-activate pref
-pref->sync : return Preference 
-deactivate sync
-deactivate pref
+    group example
+        worker -> preferences : Preference<Type>(name)
+        activate preferences
+        preferences -> worker : return preference
+        deactivate preferences
+    end
+
+    worker --> default : worker
+    deactivate worker
+
+    default --> manager : worker
+    deactivate default
+
+    manager -> worker : LoadPreferences(payload)
+    activate worker
+    worker -> preferences : Load(stream)
+    activate preferences
+    preferences --> worker
+    deactivate preferences
+    worker --> manager
+    deactivate worker
 end
 
-deactivate DefaultWorkers
-
-manager->sync : LoadPreferences(payload)
-activate manager
-activate sync
-sync --> manager
-deactivate manager
-deactivate sync
-end
-
+manager --> program
 deactivate manager
 
-Loop foreach worker in workers.value
-    Program --> sync: StartWorker()   
+loop foreach loaded worker
+    program --> worker : StartWorker()
+    activate worker
+    worker --> program
+    deactivate worker
 end
-deactivate TinyTaskServices
+
+deactivate program
 @enduml
