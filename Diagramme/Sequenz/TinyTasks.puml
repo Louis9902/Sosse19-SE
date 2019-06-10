@@ -1,0 +1,63 @@
+@startuml
+
+actor TinyTaskServices
+activate TinyTaskServices
+
+TinyTaskServices -> Program
+activate Program
+
+Program -> "manger:Worker" as manager : new Worker(configuration)
+activate manager
+manager -->Program : manager 
+deactivate manager
+
+Program -> "dict: Dictionary" as dict : new Dictionary<Guid, IWorker>()
+dict --> Program : workers
+deactivate dict
+
+Program-> manager : Load()
+activate manager
+loop foreach ConfigEntry
+manager -> DefaultWorkers : Instantiate(clazz, group, label)
+
+activate manager
+activate DefaultWorkers
+DefaultWorkers --> manager: worker
+deactivate manager
+
+DefaultWorkers -> "sync:SyncWorker" as sync
+deactivate DefaultWorkers
+activate sync
+
+sync -> "pref:PreferenceSet" as pref : new PreferenceSet()
+activate pref
+pref --> sync : get()
+deactivate pref
+deactivate sync
+
+group example 
+sync -> pref : Preference<string>("source")
+activate sync
+activate pref
+pref->sync : return Preference 
+deactivate sync
+deactivate pref
+end
+
+deactivate DefaultWorkers
+
+manager->sync : LoadPreferences(payload)
+activate manager
+activate sync
+sync --> manager
+deactivate manager
+deactivate sync
+end
+
+deactivate manager
+
+Loop foreach worker in workers.value
+    Program --> sync: StartWorker()   
+end
+deactivate TinyTaskServices
+@enduml
