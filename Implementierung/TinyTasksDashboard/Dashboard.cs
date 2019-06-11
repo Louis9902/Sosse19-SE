@@ -76,21 +76,51 @@ namespace TinyTasksDashboard
 
         private void OnFormClosing(object sender, FormClosingEventArgs args)
         {
+            
             switch (args.CloseReason)
             {
                 case CloseReason.UserClosing:
+                    {
+                        var result = MessageBox.Show(
+                            Resources.MessageCloseSave,
+                            Resources.MessageCloseSaveHeader,
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Warning);
+
+                        if (result != DialogResult.Yes) break;
+
+                        SaveWorkers();
+                        break;
+                    }
+            }
+
+            if (args.CloseReason != CloseReason.WindowsShutDown && args.CloseReason != CloseReason.TaskManagerClosing)
+            {
+                StartBackgroundProcess();
+            }
+
+        }
+
+
+        /// <summary>
+        /// Starts the background process of the application in case it isnt running already
+        /// </summary>
+        private void StartBackgroundProcess()
+        {
+            //GetPRcessesByName only throws one exception which can occure when the programm runs under Windows XP or older
+            System.Diagnostics.Process[] ps = System.Diagnostics.Process.GetProcessesByName("TinyTasksService");
+            if (ps.Length == 0)
+            {
+                try
                 {
-                    var result = MessageBox.Show(
-                        Resources.MessageCloseSave,
-                        Resources.MessageCloseSaveHeader,
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Warning);
-
-                    if (result != DialogResult.Yes) break;
-
-                    SaveWorkers();
-                    break;
+                    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo("TinyTasksService.exe", "--file \"" + GetDefaultConfiguration() + "\"");
+                    System.Diagnostics.Process process = System.Diagnostics.Process.Start(startInfo);
                 }
+                catch (Exception e)
+                {
+                    MessageBox.Show(Resources.BackgroundServiceStartupError);
+                }
+               
             }
         }
 
@@ -115,23 +145,23 @@ namespace TinyTasksDashboard
 
             using (var parameters = new Parameters(worker))
             {
-                reopen:
+            reopen:
                 var result = parameters.ShowDialog();
 
                 switch (result)
                 {
                     case DialogResult.OK when create:
-                    {
-                        ShowWorker(worker);
-                        workers[worker.Label] = worker;
-                        break;
-                    }
+                        {
+                            ShowWorker(worker);
+                            workers[worker.Label] = worker;
+                            break;
+                        }
 
                     case DialogResult.No when !create:
-                    {
-                        SystemSounds.Exclamation.Play();
-                        goto reopen;
-                    }
+                        {
+                            SystemSounds.Exclamation.Play();
+                            goto reopen;
+                        }
                 }
             }
         }
