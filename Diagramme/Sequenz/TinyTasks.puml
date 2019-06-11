@@ -44,7 +44,7 @@ loop foreach entry in config
     group example
         worker -> preferences : Preference<Type>(name)
         activate preferences
-        preferences -> worker : return preference
+        preferences --> worker : return preference
         deactivate preferences
     end
 
