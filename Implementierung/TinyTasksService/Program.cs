@@ -8,7 +8,7 @@ namespace TinyTasksService
 {
     public class Program
     {
-        private static string configuration;
+        private static string configuration = Workers.GetDefaultConfiguration();
         private static bool headless = true;
 
         public static void Main(string[] args)

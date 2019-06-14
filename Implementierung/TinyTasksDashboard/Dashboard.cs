@@ -19,14 +19,8 @@ namespace TinyTasksDashboard
         {
             InitializeLogger();
             InitializeComponent();
-            manager = new Workers(GetDefaultConfiguration());
+            manager = new Workers(Workers.GetDefaultConfiguration());
             workers = new Dictionary<Guid, IWorker>();
-        }
-
-        private static string GetDefaultConfiguration()
-        {
-            var user = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            return Path.Combine(user, "TintyTasks.cache");
         }
 
         private static void InitializeLogger()
@@ -103,24 +97,21 @@ namespace TinyTasksDashboard
 
 
         /// <summary>
-        /// Starts the background process of the application in case it isnt running already
+        /// Starts the background process of the application in case it isn't running already
         /// </summary>
-        private void StartBackgroundProcess()
+        private static void StartBackgroundProcess()
         {
-            //GetPRcessesByName only throws one exception which can occure when the programm runs under Windows XP or older
-            System.Diagnostics.Process[] ps = System.Diagnostics.Process.GetProcessesByName("TinyTasksService");
-            if (ps.Length == 0)
+            //GetProcessesByName only throws one exception which can occur when the program runs under Windows XP or older
+            var processes = System.Diagnostics.Process.GetProcessesByName("TinyTasksService");
+            if (processes.Length != 0) return;
+            try
             {
-                try
-                {
-                    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo("TinyTasksService.exe", "--file \"" + GetDefaultConfiguration() + "\"");
-                    System.Diagnostics.Process process = System.Diagnostics.Process.Start(startInfo);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(Resources.BackgroundServiceStartupError);
-                }
-               
+                var info = new System.Diagnostics.ProcessStartInfo("TinyTasksService.exe", "--file \"" + Workers.GetDefaultConfiguration() + "\"");
+                System.Diagnostics.Process.Start(info);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(Resources.BackgroundServiceStartupError);
             }
         }
 

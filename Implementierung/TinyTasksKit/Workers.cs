@@ -32,12 +32,19 @@ namespace TinyTasksKit
         {
             if (WorkerGroups.ObjectBindings.GetOrNothing(typeof(T), out var group))
             {
-                return DefaultWorker.Instantiate<T>(group, Guid.NewGuid());
+                return DefaultWorker.Instantiate<T>(@group, Guid.NewGuid());
             }
 
             throw new ArgumentException("missing group for worker");
         }
 
+        
+        public static string GetDefaultConfiguration()
+        {
+            var user = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            return Path.Combine(user, "TintyTasks.cache");
+        }
+        
         /// <summary>
         /// Loads the IWorker objects from the configuration into the IDictionary.
         /// </summary>
