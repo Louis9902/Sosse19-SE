@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
+using TinyTasksDashboard.Properties;
 using static System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode;
 
 namespace TinyTasksDashboard
@@ -95,6 +97,7 @@ namespace TinyTasksDashboard
             this.Name = "Dashboard";
             this.Text = "Worker Dashboard";
             this.Font = new System.Drawing.Font("Courier New", 8.25F);
+            this.Icon = Icon.ExtractAssociatedIcon("Resources/helmet.ico");
             
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
             this.Load += new System.EventHandler(this.OnFormLoading);
