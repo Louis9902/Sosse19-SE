@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
@@ -25,9 +26,7 @@ namespace TinyTasksDashboard
 
             base.Dispose(disposing);
         }
-
-        #region Windows Form Designer generated code
-
+        
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
@@ -133,7 +132,6 @@ namespace TinyTasksDashboard
                 this.controlCancel.Click += new EventHandler(ClickCancel);
             }
 
-            this.ClientSize = new System.Drawing.Size(650, 445);
 
             {
                 this.Controls.Add(this.controlCancel);
@@ -143,21 +141,21 @@ namespace TinyTasksDashboard
                 this.Controls.Add(this.options);
             }
             {
+                this.ClientSize = new System.Drawing.Size(650, 445);
                 this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
                 this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
                 this.Name = "Parameters";
                 this.Text = "Parameters";
                 this.Font = new System.Drawing.Font("Courier New", 8.25F);
+                this.Icon = Icon.ExtractAssociatedIcon("Resources/helmet.ico");
             }
-            
+
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
 
             ((System.ComponentModel.ISupportInitialize) (this.options)).EndInit();
             this.ResumeLayout(false);
         }
-
-        #endregion
-
+        
         private System.Windows.Forms.Label labelGroup;
         private System.Windows.Forms.Label labelLabel;
         private System.Windows.Forms.DataGridView options;
