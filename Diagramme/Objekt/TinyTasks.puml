@@ -1,0 +1,50 @@
+@startuml
+
+object Program{
+	configuration = "xyz/TinyTasks.cache"
+}
+object Manager {
+	configuration = "xyz/TinyTasks.cache"
+}
+object SyncWorker1{
+	group = 548ea2cb-b9db-465f-8228-4ad09466ec53
+	label = 937192c9-f4e9-4a1c-81dc-3f41282f2c7e
+}
+object SyncWorker2{
+	group = 548ea2cb-b9db-465f-8228-4ad09466ec53
+	label = 67a9b1c9-18fe-4c40-ac49-5e91e1c0ea1d
+}
+object Dictionary{
+	...
+}
+object PreferenceSet1
+object PreferenceSet2
+object ScalarPreference1{
+	Value = ""
+}
+object ScalarPreference2{
+	Value = ""
+}
+object ScalarPreference3{
+	Value = ""
+}
+object ScalarPreference4{
+	Value = ""
+}
+
+Dictionary o-- SyncWorker1 : content
+Dictionary o-- SyncWorker2 : content
+Program -- Manager : manager
+Program -- Dictionary : workers
+SyncWorker1 -- PreferenceSet1 : Preferences
+PreferenceSet1 o-- ScalarPreference1
+PreferenceSet1 o-- ScalarPreference2
+SyncWorker1 -- ScalarPreference1 : source
+SyncWorker1 -- ScalarPreference2 : target
+SyncWorker2 -- PreferenceSet2 : Preferences
+PreferenceSet2 o-- ScalarPreference3
+PreferenceSet2 o-- ScalarPreference4
+SyncWorker2 -- ScalarPreference3 : source
+SyncWorker2 -- ScalarPreference4 : target
+
+@enduml
