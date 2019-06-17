@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="545px" preserveAspectRatio="none" style="width:899px;height:545px;" version="1.1" viewBox="0 0 899 545" width="899px" zoomAndPan="magnify"><defs><filter height="300%" id="fewwn9armmpgc" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><rect fill="#FEFECE" filter="url(#fewwn9armmpgc)" height="39.6719" style="stroke: #A80036; stroke-width: 1.5;" width="192" x="281.5" y="8"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="48" x="353.5" y="22.457">Program</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="282.5" x2="472.5" y1="27.0938" y2="27.0938"/><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="180" x="287.5" y="41.4746">configuration = "xyz/TinyTasks.cache"</text><rect fill="#FEFECE" filter="url(#fewwn9armmpgc)" height="39.6719" style="stroke: #A80036; stroke-width: 1.5;" width="192" x="210.5" y="126"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="105" x="254" y="140.457">manager : Workers</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="211.5" x2="401.5" y1="145.0938" y2="145.0938"/><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="180" x="216.5" y="159.4746">configuration = "xyz/TinyTasks.cache"</text><rect fill="#FEFECE" filter="url(#fewwn9armmpgc)" height="52.25" style="stroke: #A80036; stroke-width: 1.5;" width="252" x="159.5" y="244"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="142" x="214.5" y="258.457">workerAlpha : SyncWorker</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="160.5" x2="410.5" y1="263.0938" y2="263.0938"/><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="240" x="165.5" y="277.4746">group = 548ea2cb-b9db-465f-8228-4ad09466ec53</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="231" x="165.5" y="290.0527">label = 937192c9-f4e9-4a1c-81dc-3f41282f2c7e</text><rect fill="#FEFECE" filter="url(#fewwn9armmpgc)" height="52.25" style="stroke: #A80036; stroke-width: 1.5;" width="252" x="457.5" y="244"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="156" x="505.5" y="258.457">workerGamma : SyncWorker</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="458.5" x2="708.5" y1="263.0938" y2="263.0938"/><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="240" x="463.5" y="277.4746">group = 548ea2cb-b9db-465f-8228-4ad09466ec53</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="237" x="463.5" y="290.0527">label = 67a9b1c9-18fe-4c40-ac49-5e91e1c0ea1d</text><rect fill="#FEFECE" filter="url(#fewwn9armmpgc)" height="39.6719" style="stroke: #A80036; stroke-width: 1.5;" width="121" x="438" y="126"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="107" x="445" y="140.457">workers : Dictionary</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="439" x2="558" y1="145.0938" y2="145.0938"/><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="9" x="444" y="159.4746">...</text><rect fill="#FEFECE" filter="url(#fewwn9armmpgc)" height="35.0938" style="stroke: #A80036; stroke-width: 1.5;" width="149" x="160" y="374"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="135" x="167" y="388.457">setAlpha : PreferenceSet</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="161" x2="308" y1="393.0938" y2="393.0938"/><rect fill="#FEFECE" filter="url(#fewwn9armmpgc)" height="35.0938" style="stroke: #A80036; stroke-width: 1.5;" width="163" x="561" y="374"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="149" x="568" y="388.457">setGamma : PreferenceSet</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="562" x2="723" y1="393.0938" y2="393.0938"/><rect fill="#FEFECE" filter="url(#fewwn9armmpgc)" height="64.8281" style="stroke: #A80036; stroke-width: 1.5;" width="187" x="6" y="470"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="173" x="13" y="484.457">sourceAlpha : ScalarPreference</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="7" x2="192" y1="489.0938" y2="489.0938"/><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="79" x="12" y="503.4746">Name = "source"</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="48" x="12" y="516.0527">Value = ""</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="62" x="12" y="528.6309">Visible = true</text><rect fill="#FEFECE" filter="url(#fewwn9armmpgc)" height="64.8281" style="stroke: #A80036; stroke-width: 1.5;" width="180" x="236.5" y="470"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="166" x="243.5" y="484.457">targetAlpha : ScalarPreference</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="237.5" x2="415.5" y1="489.0938" y2="489.0938"/><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="75" x="242.5" y="503.4746">Name = "target"</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="48" x="242.5" y="516.0527">Value = ""</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="62" x="242.5" y="528.6309">Visible = true</text><rect fill="#FEFECE" filter="url(#fewwn9armmpgc)" height="64.8281" style="stroke: #A80036; stroke-width: 1.5;" width="201" x="456" y="470"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="187" x="463" y="484.457">sourceGamma : ScalarPreference</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="457" x2="656" y1="489.0938" y2="489.0938"/><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="79" x="462" y="503.4746">Name = "source"</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="48" x="462" y="516.0527">Value = ""</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="62" x="462" y="528.6309">Visible = true</text><rect fill="#FEFECE" filter="url(#fewwn9armmpgc)" height="64.8281" style="stroke: #A80036; stroke-width: 1.5;" width="194" x="694.5" y="470"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="180" x="701.5" y="484.457">targetGamma : ScalarPreference</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="695.5" x2="887.5" y1="489.0938" y2="489.0938"/><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="75" x="700.5" y="503.4746">Name = "target"</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="48" x="700.5" y="516.0527">Value = ""</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="62" x="700.5" y="528.6309">Visible = true</text><!--link Program to manager--><path d="M365.776,48.155 C352.621,69.648 331.404,104.312 318.242,125.817 " fill="none" id="Program-manager" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="50" x="347.5" y="92.4951">manager</text><!--link Program to workers--><path d="M397.481,48.155 C419.9,69.648 456.058,104.312 478.49,125.817 " fill="none" id="Program-workers" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="45" x="445.5" y="92.4951">workers</text><!--link workers to workerAlpha--><path d="M453.887,172.553 C417.249,193.538 365.646,223.095 329.247,243.943 " fill="none" id="workers-workerAlpha" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#FFFFFF" points="465.219,166.062,458.0245,165.5734,454.8063,172.0266,462.0009,172.5152,465.219,166.062" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="43" x="412.5" y="210.4951">content</text><!--link workers to workerGamma--><path d="M519.397,176.993 C533.67,197.48 552.372,224.322 565.888,243.722 " fill="none" id="workers-workerGamma" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#FFFFFF" points="511.781,166.062,511.9291,173.2716,518.6411,175.9078,518.493,168.6982,511.781,166.062" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="43" x="544.5" y="210.4951">content</text><!--link workerAlpha to preferenceAlpha--><path d="M274.809,296.051 C264.819,319.458 250.19,353.736 241.577,373.918 " fill="none" id="workerAlpha-preferenceAlpha" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="69" x="263.5" y="340.4951">Preferences</text><!--link preferenceAlpha to sourceAlpha--><path d="M203.663,417.398 C184.388,432.961 159.386,453.1473 138.709,469.8423 " fill="none" id="preferenceAlpha-sourceAlpha" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#FFFFFF" points="213.996,409.055,206.8149,409.7119,204.6592,416.5932,211.8404,415.9364,213.996,409.055" style="stroke: #A80036; stroke-width: 1.0;"/><!--link preferenceAlpha to targetAlpha--><path d="M257.184,419.376 C270.072,434.645 286.278,453.8462 299.78,469.8423 " fill="none" id="preferenceAlpha-targetAlpha" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#FFFFFF" points="248.473,409.055,249.2866,416.2201,256.2134,418.2248,255.3998,411.0598,248.473,409.055" style="stroke: #A80036; stroke-width: 1.0;"/><!--link workerAlpha to sourceAlpha--><path d="M202.04,296.185 C164.462,312.124 123.639,336.906 101.5,374 C84.2548,402.895 86.7832,442.426 91.6837,469.776 " fill="none" id="workerAlpha-sourceAlpha" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="39" x="102.5" y="396.9951">source</text><!--link workerAlpha to targetAlpha--><path d="M319.618,296.12 C328.426,304.535 336.756,314.69 341.5,326 C361.255,373.092 348.853,433.428 337.842,469.6889 " fill="none" id="workerAlpha-targetAlpha" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="33" x="353.5" y="396.9951">target</text><!--link workerGamma to preferenceGamma--><path d="M595.868,296.051 C607.425,319.458 624.349,353.736 634.313,373.918 " fill="none" id="workerGamma-preferenceGamma" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="69" x="618.5" y="340.4951">Preferences</text><!--link preferenceGamma to sourceGamma--><path d="M621.295,419.376 C609.248,434.645 594.098,453.8462 581.478,469.8423 " fill="none" id="preferenceGamma-sourceGamma" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#FFFFFF" points="629.438,409.055,622.5812,411.2875,622.0047,418.4755,628.8615,416.243,629.438,409.055" style="stroke: #A80036; stroke-width: 1.0;"/><!--link preferenceGamma to targetGamma--><path d="M675.648,416.749 C697.038,432.397 725.085,452.9143 748.225,469.8423 " fill="none" id="preferenceGamma-targetGamma" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#FFFFFF" points="665.13,409.055,667.611,415.8259,674.8152,416.1399,672.3343,409.3691,665.13,409.055" style="stroke: #A80036; stroke-width: 1.0;"/><!--link workerGamma to sourceGamma--><path d="M555.5,296.331 C536.498,315.521 512.991,343.688 502.5,374 C490.982,407.28 510.331,444.2248 528.991,469.741 " fill="none" id="workerGamma-sourceGamma" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="39" x="503.5" y="396.9951">source</text><!--link workerGamma to targetGamma--><path d="M645.363,296.109 C662.657,304.432 680.958,314.541 696.5,326 C720.037,343.353 725.882,349.278 741.5,374 C760.612,404.252 774.533,443.0006 782.762,469.7997 " fill="none" id="workerGamma-targetGamma" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="33" x="760.5" y="396.9951">target</text><!--
+@startuml TinyTasks
+
+object Program {
+	configuration = "xyz/TinyTasks.cache"
+}
+
+object "<u>manager : Workers</u>" as manager {
+	configuration = "xyz/TinyTasks.cache"
+}
+
+object "<u>workerAlpha : SyncWorker</u>" as workerAlpha {
+	group = 548ea2cb-b9db-465f-8228-4ad09466ec53
+	label = 937192c9-f4e9-4a1c-81dc-3f41282f2c7e
+}
+
+object "<u>workerGamma : SyncWorker</u>" as workerGamma {
+	group = 548ea2cb-b9db-465f-8228-4ad09466ec53
+	label = 67a9b1c9-18fe-4c40-ac49-5e91e1c0ea1d
+}
+
+object "<u>workers : Dictionary</u>" as workers {
+	...
+}
+
+object "<u>setAlpha : PreferenceSet</u>" as preferenceAlpha
+object "<u>setGamma : PreferenceSet</u>" as preferenceGamma
+
+object "<u>sourceAlpha : ScalarPreference</u>" as sourceAlpha {
+	Name = "source"
+	Value = ""
+	Visible = true
+}
+
+object "<u>targetAlpha : ScalarPreference</u>" as targetAlpha {
+	Name = "target"
+	Value = ""
+	Visible = true
+}
+
+object "<u>sourceGamma : ScalarPreference</u>" as sourceGamma {
+	Name = "source"
+	Value = ""
+	Visible = true
+}
+
+object "<u>targetGamma : ScalarPreference</u>" as targetGamma {
+	Name = "target"
+	Value = ""
+	Visible = true
+}
+
+Program - - manager : manager
+Program - - workers : workers
+
+workers o- - workerAlpha : content
+workers o- - workerGamma : content
+
+workerAlpha - - preferenceAlpha : Preferences
+preferenceAlpha o- - sourceAlpha 
+preferenceAlpha o- - targetAlpha 
+workerAlpha - - sourceAlpha : source
+workerAlpha - - targetAlpha : target
+
+workerGamma - - preferenceGamma : Preferences
+preferenceGamma o- - sourceGamma
+preferenceGamma o- - targetGamma
+workerGamma - - sourceGamma : source
+workerGamma - - targetGamma : target
+@enduml
+
+PlantUML version 1.2019.06(Fri May 24 19:10:25 CEST 2019)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 1.8.0_212-b03
+Operating System: Windows 10
+OS Version: 10.0
+Default Encoding: Cp1252
+Language: de
+Country: DE
+--></g></svg>

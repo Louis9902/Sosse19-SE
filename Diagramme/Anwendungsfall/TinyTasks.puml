@@ -27,8 +27,7 @@ rectangle UserInterface {
         save workers
     " 
     
-    delete ..> create : include
-    change ..> create : include
+    create ..> change : include
 }
 
 note right of save
@@ -43,8 +42,6 @@ rectangle Service {
     usecase abort as "
         abort workers
     "
-
-    abort .> start : extends
 }
 
 note right of abort

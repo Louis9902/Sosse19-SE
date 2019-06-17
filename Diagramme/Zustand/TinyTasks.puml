@@ -1,4 +1,4 @@
-@startuml
+@startuml TinyTasks
 left to right direction
 
 state "Conifg exists" as config
@@ -8,28 +8,25 @@ state "Program running" as run
 state "Workers stop" as stop
 state "Config save" as save
 
-
-[*]->config
-config ->[*] : [config file doesn't exist]
+[*] -> config
+config -> [*] : [config file doesn't exist]
 config -> load : [config file exist]
 load -> start  : Configuration has been loaded
 start -> run : All workers have been started
 run -> stop : Workers shutdown \n [escape character has been pressed]
-stop -> save : All workers have been stopped 
+stop -> save : All workers have been stopped
 save --> [*] : Configuration has been saved
 
 config: do\ File.Exist(config)
 
 load: entry\ LoadConfig()
 
-start: do\ foreach worker: StartWorker()
+start: entry\ foreach worker: StartWorker()
 
-run : do\ wait for Program exit 
-run : exit\ Escapecharacter read from input 
+run : do\ wait for Program exit
+run : exit\ Escapecharacter read from input
 
-stop : do\ foreach worker: AbortWorker()
+stop : entry\ foreach worker: AbortWorker()
 
 save : do\ SaveConfig()
-
-
 @enduml
