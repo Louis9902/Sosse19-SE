@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using TinyTasksKit.Worker.Group;
 using TinyTasksKit.Worker.Preferences;
 
@@ -75,7 +76,8 @@ namespace TinyTasksKit.Worker
             if (Directory.Exists(srcNew))
             {
                 MoveOrMergeDirectory(srcNew, tgtNew);
-                Directory.Delete(tgtOld, true);
+                if (Directory.Exists(tgtOld))
+                    Directory.Delete(tgtOld, true);
             }
         }
 
@@ -156,6 +158,8 @@ namespace TinyTasksKit.Worker
             watcher.Renamed += OnCommonFileEvent;
 
             watcher.EnableRaisingEvents = true;
+
+            CheckFirstCopy();
         }
 
         public override void AbortWorker()
@@ -166,6 +170,44 @@ namespace TinyTasksKit.Worker
         public override string ToString()
         {
             return $"SyncWorker {Source}, {Target}, {caches.Value.Count}";
+        }
+
+        private void CheckFirstCopy()
+        {
+            if (!Directory.Exists(target) || IsDirectoryEmpty(target) && !IsDirectoryEmpty(source))
+            {
+                Copy(source, target);
+            }
+        }
+
+        private static void Copy(string sourceDir, string targetDir)
+        {
+            var source = new DirectoryInfo(sourceDir);
+            var target = new DirectoryInfo(targetDir);
+
+            CopyAll(source, target);
+        }
+
+        private static void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        {
+            Directory.CreateDirectory(target.FullName);
+
+            foreach (var info in source.GetFiles())
+            {
+                Logger.Debug(@"Copying {0}\{1}", target.FullName, info.Name);
+                info.CopyTo(Path.Combine(target.FullName, info.Name), true);
+            }
+
+            foreach (var info in source.GetDirectories())
+            {
+                var next = target.CreateSubdirectory(info.Name);
+                CopyAll(info, next);
+            }
+        }
+
+        private static bool IsDirectoryEmpty(string path)
+        {
+            return !Directory.EnumerateFileSystemEntries(path).Any();
         }
 
         private static void MoveOrMergeDirectory(string sourceDir, string targetDir)
