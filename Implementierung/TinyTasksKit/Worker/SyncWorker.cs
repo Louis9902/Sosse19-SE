@@ -13,9 +13,7 @@ namespace TinyTasksKit.Worker
 
         private readonly ScalarPreference<string> source;
         private readonly ScalarPreference<string> target;
-
-        private readonly ListPreference<string> caches;
-
+        
         private FileSystemWatcher watcher;
 
         public SyncWorker()
@@ -169,7 +167,7 @@ namespace TinyTasksKit.Worker
 
         public override string ToString()
         {
-            return $"SyncWorker {Source}, {Target}, {caches.Value.Count}";
+            return $"SyncWorker {Source}, {Target}";
         }
 
         private void CheckFirstCopy()
